@@ -24,8 +24,28 @@ export default async function Footer() {
               href="/"
               className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
             >
-              Medusa Store
+              Shams Tools
             </LocalizedClientLink>
+            <p className="text-ui-fg-muted txt-compact-small mt-4 max-w-xs leading-relaxed">
+              Al Qandeel Street, Al Aziziyah District, Jeddah 23334, KSA
+            </p>
+            <p className="text-ui-fg-muted txt-compact-small mt-2">
+              <a
+                href="mailto:contact@shamstools.com"
+                className="hover:text-ui-fg-base"
+              >
+                contact@shamstools.com
+              </a>
+              <br />
+              <a
+                href="https://wa.me/966539329973"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-ui-fg-base"
+              >
+                +966 53 932 9973
+              </a>
+            </p>
           </div>
           <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
             {product_categories && product_categories?.length > 0 && (
@@ -113,45 +133,18 @@ export default async function Footer() {
               </div>
             )}
             <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">Medusa</span>
+              <span className="txt-small-plus txt-ui-fg-base">Hours</span>
               <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
-                <li>
-                  <a
-                    href="https://github.com/medusajs"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    GitHub
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://docs.medusajs.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/medusajs/b2b-starter-medusa"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Source code
-                  </a>
-                </li>
+                <li>Morning: 07:30 AM – 02:00 PM</li>
+                <li>Evening: 04:30 PM – 08:00 PM</li>
+                <li>Friday: Closed</li>
               </ul>
             </div>
           </div>
         </div>
         <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
           <Text className="txt-compact-small">
-            © {new Date().getFullYear()} Medusa Store. All rights reserved.
+            © 2026 Shams Tools. All rights reserved.
           </Text>
           <MedusaCTA />
         </div>
