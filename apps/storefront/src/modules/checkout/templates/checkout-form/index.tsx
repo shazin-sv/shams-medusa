@@ -35,18 +35,29 @@ export default async function CheckoutForm({
   }
 
   return (
-    <div>
-      <div className="w-full grid grid-cols-1 gap-y-2">
-        <LocalizedClientLink
-          className="flex items-baseline gap-2 text-sm text-neutral-400 hover:text-neutral-500"
-          href="/cart"
-        >
-          <Button variant="secondary">
+    <div className="surface-card p-5 small:p-6">
+      <div className="mb-5">
+        <LocalizedClientLink href="/cart" className="inline-flex">
+          <Button variant="transparent">
             <UTurnArrowRight />
-            Back to shopping cart
+            Back to cart
           </Button>
         </LocalizedClientLink>
+      </div>
 
+      <div className="mb-6">
+        <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#d59a00]">
+          Checkout
+        </div>
+        <h1 className="mt-2 font-[Manrope] text-3xl font-extrabold tracking-[-0.05em] text-slate-950">
+          Complete your order
+        </h1>
+        <p className="mt-2 text-sm leading-7 text-slate-500">
+          A cleaner step-by-step form makes shipping, billing and payment easier to review.
+        </p>
+      </div>
+
+      <div className="grid w-full grid-cols-1 gap-y-4">
         {!customer ? <SignInPrompt /> : null}
 
         {cart.approval_status &&

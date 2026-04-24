@@ -23,68 +23,49 @@ const CartTotals: React.FC = () => {
 
   return (
     <div>
-      <div className="flex flex-col gap-y-2 txt-medium text-ui-fg-subtle ">
-        <div className="flex items-center justify-between">
-          <Text className="flex gap-x-1 items-center">
-            Subtotal (excl. shipping and taxes)
-          </Text>
-          <Text
-            data-testid="cart-item-subtotal"
-            data-value={item_subtotal || 0}
-          >
+      <div className="flex flex-col gap-y-3 text-sm text-slate-600">
+        <div className="flex items-center justify-between gap-4">
+          <Text>Subtotal</Text>
+          <Text data-testid="cart-item-subtotal" data-value={item_subtotal || 0}>
             {convertToLocale({ amount: item_subtotal ?? 0, currency_code })}
           </Text>
         </div>
         {!!discount_total && (
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <Text>Discount</Text>
-            <Text
-              className="text-ui-fg-interactive"
-              data-testid="cart-discount"
-              data-value={discount_total || 0}
-            >
-              -{" "}
-              {convertToLocale({ amount: discount_total ?? 0, currency_code })}
+            <Text className="text-emerald-700" data-testid="cart-discount" data-value={discount_total || 0}>
+              - {convertToLocale({ amount: discount_total ?? 0, currency_code })}
             </Text>
           </div>
         )}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <Text>Shipping</Text>
           <Text data-testid="cart-shipping" data-value={shipping_total || 0}>
             {convertToLocale({ amount: shipping_total ?? 0, currency_code })}
           </Text>
         </div>
-        <div className="flex justify-between">
-          <Text className="flex gap-x-1 items-center ">Taxes</Text>
+        <div className="flex justify-between gap-4">
+          <Text>Taxes</Text>
           <Text data-testid="cart-taxes" data-value={tax_total || 0}>
             {convertToLocale({ amount: tax_total ?? 0, currency_code })}
           </Text>
         </div>
         {!!gift_card_total && (
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <Text>Gift card</Text>
-            <Text
-              className="text-ui-fg-interactive"
-              data-testid="cart-gift-card-amount"
-              data-value={gift_card_total || 0}
-            >
-              -{" "}
-              {convertToLocale({ amount: gift_card_total ?? 0, currency_code })}
+            <Text className="text-emerald-700" data-testid="cart-gift-card-amount" data-value={gift_card_total || 0}>
+              - {convertToLocale({ amount: gift_card_total ?? 0, currency_code })}
             </Text>
           </div>
         )}
       </div>
-      <Divider className="my-2" />
-      <div className="flex items-center justify-between text-ui-fg-base mb-2 txt-medium ">
-        <Text className="font-medium">Total</Text>
+      <Divider className="my-4" />
+      <div className="flex items-center justify-between gap-4">
+        <Text className="text-base font-semibold text-slate-950">Total</Text>
         {isUpdatingCart ? (
-          <div className="w-28 h-6 mt-[3px] bg-neutral-200 rounded-full animate-pulse" />
+          <div className="mt-[3px] h-6 w-28 animate-pulse rounded-full bg-slate-200" />
         ) : (
-          <Text
-            className="txt-xlarge-plus"
-            data-testid="cart-total"
-            data-value={total || 0}
-          >
+          <Text className="text-2xl font-extrabold tracking-[-0.04em] text-slate-950" data-testid="cart-total" data-value={total || 0}>
             {convertToLocale({ amount: total ?? 0, currency_code })}
           </Text>
         )}

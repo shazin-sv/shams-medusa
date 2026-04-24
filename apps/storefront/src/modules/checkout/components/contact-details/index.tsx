@@ -4,7 +4,7 @@ import { setContactDetails } from "@/lib/data/cart"
 import Divider from "@/modules/common/components/divider"
 import { ApprovalStatusType, B2BCart, B2BCustomer } from "@/types"
 import { CheckCircleSolid } from "@medusajs/icons"
-import { clx, Container, Heading, Text } from "@medusajs/ui"
+import { Heading, Text, clx } from "@medusajs/ui"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useActionState, useCallback } from "react"
 import ContactDetailsForm from "../contact-details-form"
@@ -26,7 +26,6 @@ const ContactDetails = ({
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams)
       params.set(name, value)
-
       return params.toString()
     },
     [searchParams]
@@ -49,7 +48,6 @@ const ContactDetails = ({
     cart.company?.approval_settings?.requires_sales_manager_approval
 
   const cartApprovalStatus = cart?.approval_status?.status
-
   const customerIsAdmin = customer?.employee?.is_admin || false
 
   const handleEdit = () => {
@@ -73,20 +71,16 @@ const ContactDetails = ({
   }
 
   return (
-    <Container>
-      <div className="flex flex-col gap-y-2">
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 small:p-6">
+      <div className="flex flex-col gap-y-3">
         <div className="flex flex-row items-center justify-between w-full">
           <Heading
             level="h2"
-            className={clx(
-              "flex flex-row text-xl gap-x-2 items-center font-medium",
-              {
-                "opacity-50 pointer-events-none select-none":
-                  !isOpen && !isCompleted,
-              }
-            )}
+            className={clx("flex flex-row items-center gap-x-2 text-xl font-bold text-slate-950", {
+              "pointer-events-none select-none opacity-50": !isOpen && !isCompleted,
+            })}
           >
-            Contact Details
+            Contact details
             {!isOpen && isCompleted && <CheckCircleSolid />}
           </Heading>
 
@@ -94,11 +88,7 @@ const ContactDetails = ({
             isCompleted &&
             cartApprovalStatus !== ApprovalStatusType.PENDING && (
               <Text>
-                <button
-                  onClick={handleEdit}
-                  className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-                  data-testid="edit-contact-details-button"
-                >
+                <button onClick={handleEdit} className="text-sm font-semibold text-slate-600 hover:text-slate-950" data-testid="edit-contact-details-button">
                   Edit
                 </button>
               </Text>
@@ -107,41 +97,28 @@ const ContactDetails = ({
         {(isOpen || isCompleted) && <Divider />}
         {isOpen ? (
           <form action={handleSubmit}>
-            <div className="pb-8">
+            <div className="pb-2">
               <ContactDetailsForm customer={customer} cart={cart} />
-              <div className="flex flex-col gap-y-2 items-end">
-                <SubmitButton
-                  className="mt-6"
-                  data-testid="submit-address-button"
-                >
-                  {requiresApproval &&
-                  cartApprovalStatus !== ApprovalStatusType.APPROVED &&
-                  !customerIsAdmin
+              <div className="mt-4 flex flex-col items-end gap-y-2">
+                <SubmitButton className="mt-2" data-testid="submit-address-button">
+                  {requiresApproval && cartApprovalStatus !== ApprovalStatusType.APPROVED && !customerIsAdmin
                     ? "Review order"
-                    : "Next step"}
+                    : "Continue"}
                 </SubmitButton>
-                <ErrorMessage
-                  error={message}
-                  data-testid="address-error-message"
-                />
+                <ErrorMessage error={message} data-testid="address-error-message" />
               </div>
             </div>
           </form>
         ) : (
           cart &&
           isCompleted && (
-            <div className="text-small-regular">
-              <div
-                className="flex flex-col w-full gap-y-2"
-                data-testid="contact-details-summary"
-              >
-                <Text className="txt-medium text-ui-fg-subtle">
-                  {cart.email}
-                </Text>
+            <div className="text-sm">
+              <div className="flex flex-col gap-y-2" data-testid="contact-details-summary">
+                <Text className="leading-7 text-slate-600">{cart.email}</Text>
                 {cart.metadata?.notes ? (
                   <div>
                     <Divider />
-                    <Text className="txt-medium text-ui-fg-subtle pt-2">
+                    <Text className="pt-2 leading-7 text-slate-600">
                       Note: {cart.metadata?.notes as string}
                     </Text>
                   </div>
@@ -151,7 +128,7 @@ const ContactDetails = ({
           )
         )}
       </div>
-    </Container>
+    </div>
   )
 }
 

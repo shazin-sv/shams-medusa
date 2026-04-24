@@ -210,7 +210,7 @@ const AccountNav = ({
                 >
                   Approvals{" "}
                   {numPendingApprovals > 0 && (
-                    <span className="bg-blue-500 text-white text-xs px-1.5 py-px rounded-full">
+                    <span className="bg-black text-white font-mono text-[10px] px-1.5">
                       {numPendingApprovals}
                     </span>
                   )}

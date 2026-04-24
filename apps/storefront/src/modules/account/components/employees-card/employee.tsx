@@ -114,7 +114,7 @@ const Employee = ({
             {employee.is_admin && (
               <>
                 {" • "}
-                <span className="text-blue-500">Admin</span>
+                <span className="text-[#FFC107]">Admin</span>
               </>
             )}
           </Text>

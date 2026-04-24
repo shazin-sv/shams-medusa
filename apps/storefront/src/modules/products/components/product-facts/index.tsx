@@ -19,26 +19,34 @@ const ProductFacts = ({ product }: { product: HttpTypes.StoreProduct }) => {
   const hasManageInventory = !!managedVariants?.length
 
   return (
-    <div className="flex flex-col gap-y-2 w-full">
-      {hasManageInventory && (inventoryQuantity > 10 ? (
-        <span className="flex items-center gap-x-2 text-neutral-600 text-sm">
-          <CheckCircleSolid className="text-green-500" /> Can be shipped
-          immediately ({inventoryQuantity} in stock)
-        </span>
-      ) : (
-        <span className="flex items-center gap-x-2 text-neutral-600 text-sm ">
-          <ExclamationCircleSolid className="text-orange-500" />
-          Limited quantity available ({inventoryQuantity} in stock)
-        </span>
-      ))}
-      <span className="flex items-center gap-x-2 text-neutral-600 text-sm">
-        {product.mid_code && (
-          <>
-            <InformationCircleSolid />
-            MID: {product.mid_code}
-          </>
-        )}
-      </span>
+    <div className="grid w-full gap-3 small:grid-cols-2">
+      {hasManageInventory && (
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+          <div className="flex items-center gap-2 font-semibold text-slate-950">
+            {inventoryQuantity > 10 ? (
+              <CheckCircleSolid className="text-emerald-600" />
+            ) : (
+              <ExclamationCircleSolid className="text-amber-500" />
+            )}
+            Availability
+          </div>
+          <p className="mt-2 leading-6">
+            {inventoryQuantity > 10
+              ? `Ready to ship, ${inventoryQuantity} in stock.`
+              : `Limited quantity available, ${inventoryQuantity} in stock.`}
+          </p>
+        </div>
+      )}
+
+      {product.mid_code && (
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+          <div className="flex items-center gap-2 font-semibold text-slate-950">
+            <InformationCircleSolid className="text-slate-500" />
+            Product reference
+          </div>
+          <p className="mt-2 leading-6">MID: {product.mid_code}</p>
+        </div>
+      )}
     </div>
   )
 }

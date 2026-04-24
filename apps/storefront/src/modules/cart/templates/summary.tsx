@@ -13,7 +13,6 @@ import { RequestQuotePrompt } from "@/modules/quotes/components/request-quote-pr
 import { B2BCustomer } from "@/types"
 import { ApprovalStatusType } from "@/types/approval"
 import { ExclamationCircle } from "@medusajs/icons"
-import { Container } from "@medusajs/ui"
 
 type SummaryProps = {
   customer: B2BCustomer | null
@@ -37,68 +36,59 @@ const Summary = ({ customer, spendLimitExceeded }: SummaryProps) => {
   )
 
   return (
-    <Container className="flex flex-col gap-y-3">
-      <CartTotals />
+    <div className="surface-card p-5 small:p-6">
+      <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#d59a00]">
+        Order summary
+      </div>
+      <div className="mt-4">
+        <CartTotals />
+      </div>
       <Divider />
       <PromotionCode cart={cart} />
-      <Divider className="my-6" />
+      <Divider className="my-5" />
       {spendLimitExceeded && (
-        <div className="flex items-center gap-x-2 bg-neutral-100 p-3 rounded-md shadow-borders-base">
-          <ExclamationCircle className="text-orange-500 w-fit overflow-visible" />
-          <p className="text-neutral-950 text-xs">
-            This order exceeds your spending limit.
-            <br />
-            Please contact your manager for approval.
+        <div className="mb-4 flex items-center gap-x-2 rounded-2xl border border-amber-200 bg-amber-50 p-3">
+          <ExclamationCircle className="w-fit overflow-visible text-amber-600" />
+          <p className="text-xs text-amber-900">
+            This order exceeds your spending limit. Please contact your manager for approval.
           </p>
         </div>
       )}
-      <LocalizedClientLink
-        href={checkoutButtonLink}
-        data-testid="checkout-button"
-      >
+      <div className="flex flex-col gap-3">
+        <LocalizedClientLink href={checkoutButtonLink} data-testid="checkout-button">
+          <Button className="w-full" disabled={spendLimitExceeded}>
+            {customer
+              ? spendLimitExceeded
+                ? "Spending Limit Exceeded"
+                : "Proceed to checkout"
+              : "Log in to checkout"}
+          </Button>
+        </LocalizedClientLink>
+        {!!customer && (
+          <RequestQuoteConfirmation>
+            <Button className="w-full" variant="secondary" disabled={isPendingApproval}>
+              Request quote
+            </Button>
+          </RequestQuoteConfirmation>
+        )}
+        {!customer && (
+          <RequestQuotePrompt>
+            <Button className="w-full" variant="secondary" disabled={isPendingApproval}>
+              Request quote
+            </Button>
+          </RequestQuotePrompt>
+        )}
+        <CartToCsvButton cart={cart} />
         <Button
-          className="w-full h-10 rounded-full shadow-none"
-          disabled={spendLimitExceeded}
+          onClick={handleEmptyCart}
+          className="w-full"
+          variant="transparent"
+          disabled={isPendingApproval}
         >
-          {customer
-            ? spendLimitExceeded
-              ? "Spending Limit Exceeded"
-              : "Checkout"
-            : "Log in to Checkout"}
+          Empty cart
         </Button>
-      </LocalizedClientLink>
-      {!!customer && (
-        <RequestQuoteConfirmation>
-          <Button
-            className="w-full h-10 rounded-full shadow-borders-base"
-            variant="secondary"
-            disabled={isPendingApproval}
-          >
-            Request Quote
-          </Button>
-        </RequestQuoteConfirmation>
-      )}
-      {!customer && (
-        <RequestQuotePrompt>
-          <Button
-            className="w-full h-10 rounded-full shadow-borders-base"
-            variant="secondary"
-            disabled={isPendingApproval}
-          >
-            Request Quote
-          </Button>
-        </RequestQuotePrompt>
-      )}
-      <CartToCsvButton cart={cart} />
-      <Button
-        onClick={handleEmptyCart}
-        className="w-full h-10 rounded-full shadow-borders-base"
-        variant="secondary"
-        disabled={isPendingApproval}
-      >
-        Empty Cart
-      </Button>
-    </Container>
+      </div>
+    </div>
   )
 }
 

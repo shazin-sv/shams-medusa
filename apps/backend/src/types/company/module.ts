@@ -12,11 +12,17 @@ export enum ModuleCompanySpendingLimitResetFrequency {
   YEARLY = "yearly",
 }
 
+export enum ModuleCompanyAccountType {
+  BUSINESS = "business",
+  NORMAL = "normal",
+}
+
 export type ModuleCompany = {
   id: string;
   name: string;
   phone: string;
   email: string;
+  account_type: ModuleCompanyAccountType;
   address: string | null;
   city: string | null;
   state: string | null;
@@ -35,6 +41,7 @@ export type ModuleCreateCompany = {
   name: string;
   phone: string;
   email: string;
+  account_type?: ModuleCompanyAccountType | null;
   address: string | null;
   city: string | null;
   state: string | null;

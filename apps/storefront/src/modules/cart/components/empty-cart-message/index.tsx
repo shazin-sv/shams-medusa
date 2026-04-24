@@ -4,18 +4,17 @@ import { Heading, Text } from "@medusajs/ui"
 const EmptyCartMessage = () => {
   return (
     <div
-      className="py-48 px-2 flex flex-col justify-center items-start"
+      className="surface-card flex flex-col items-start px-6 py-14 small:px-8"
       data-testid="empty-cart-message"
     >
-      <Heading
-        level="h1"
-        className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
-      >
-        Cart
+      <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#d59a00]">
+        Your cart
+      </div>
+      <Heading level="h1" className="mt-2 text-3xl font-extrabold tracking-[-0.05em] text-slate-950">
+        Your cart is empty
       </Heading>
-      <Text className="text-base-regular mt-4 mb-6 max-w-[32rem]">
-        You don&apos;t have anything in your cart. Let&apos;s change that, use
-        the link below to start browsing our products.
+      <Text className="mb-6 mt-4 max-w-[32rem] text-sm leading-7 text-slate-500">
+        You don&apos;t have anything in your cart yet. Start browsing products and add the items you need.
       </Text>
       <div>
         <InteractiveLink href="/store">Explore products</InteractiveLink>

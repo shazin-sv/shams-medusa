@@ -9,7 +9,7 @@ import Spinner from "@/modules/common/icons/spinner"
 import { B2BCart, B2BCustomer } from "@/types"
 import { ApprovalStatusType } from "@/types/approval"
 import { CheckCircleSolid } from "@medusajs/icons"
-import { Container, Heading, Text } from "@medusajs/ui"
+import { Heading, Text } from "@medusajs/ui"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useState } from "react"
 
@@ -26,23 +26,21 @@ const ShippingAddress = ({
   const [error, setError] = useState<string | null>(null)
 
   const isOpen = searchParams.get("step") === "shipping-address"
-
   const cartApprovalStatus = cart?.approval_status?.status
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams)
       params.set(name, value)
-
       return params.toString()
     },
     [searchParams]
   )
+
   const handleEdit = () => {
-    router.push(
-      pathname + "?" + createQueryString("step", "shipping-address"),
-      { scroll: false }
-    )
+    router.push(pathname + "?" + createQueryString("step", "shipping-address"), {
+      scroll: false,
+    })
   }
 
   const handleSubmit = async (formData: FormData) => {
@@ -57,14 +55,11 @@ const ShippingAddress = ({
   }
 
   return (
-    <Container>
-      <div className="flex flex-col gap-y-2">
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 small:p-6">
+      <div className="flex flex-col gap-y-3">
         <div className="flex flex-row items-center justify-between w-full">
-          <Heading
-            level="h2"
-            className="flex flex-row text-xl gap-x-2 items-center"
-          >
-            Shipping Address
+          <Heading level="h2" className="flex flex-row items-center gap-x-2 text-xl font-bold text-slate-950">
+            Shipping address
             {!isOpen && <CheckCircleSolid />}
           </Heading>
 
@@ -72,11 +67,7 @@ const ShippingAddress = ({
             cart?.shipping_address &&
             cartApprovalStatus !== ApprovalStatusType.PENDING && (
               <Text>
-                <button
-                  onClick={handleEdit}
-                  className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-                  data-testid="edit-address-button"
-                >
+                <button onClick={handleEdit} className="text-sm font-semibold text-slate-600 hover:text-slate-950" data-testid="edit-address-button">
                   Edit
                 </button>
               </Text>
@@ -85,48 +76,33 @@ const ShippingAddress = ({
         <Divider />
         {isOpen ? (
           <form action={handleSubmit}>
-            <div className="pb-8">
+            <div className="pb-2">
               <ShippingAddressForm customer={customer} cart={cart} />
-              <div className="flex flex-col gap-y-2 items-end">
-                <SubmitButton
-                  className="mt-6"
-                  data-testid="submit-address-button"
-                >
-                  Next step
+              <div className="mt-4 flex flex-col items-end gap-y-2">
+                <SubmitButton className="mt-2" data-testid="submit-address-button">
+                  Continue
                 </SubmitButton>
-                <ErrorMessage
-                  error={error}
-                  data-testid="address-error-message"
-                />
+                <ErrorMessage error={error} data-testid="address-error-message" />
               </div>
             </div>
           </form>
         ) : (
           <div>
-            <div className="text-small-regular">
-              {cart && cart.shipping_address ? (
-                <div className="flex items-start gap-x-8">
-                  <div className="flex" data-testid="shipping-address-summary">
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.first_name}{" "}
-                      {cart.shipping_address.last_name},{" "}
-                      {cart.shipping_address.address_1},{" "}
-                      {cart.shipping_address.postal_code},{" "}
-                      {cart.shipping_address.city},{" "}
-                      {cart.shipping_address.country_code?.toUpperCase()}
-                    </Text>
-                  </div>
+            {cart && cart.shipping_address ? (
+              <div className="flex items-start gap-x-8">
+                <div className="flex" data-testid="shipping-address-summary">
+                  <Text className="text-sm leading-7 text-slate-600">
+                    {cart.shipping_address.first_name} {cart.shipping_address.last_name}, {cart.shipping_address.address_1}, {cart.shipping_address.postal_code}, {cart.shipping_address.city}, {cart.shipping_address.country_code?.toUpperCase()}
+                  </Text>
                 </div>
-              ) : (
-                <div>
-                  <Spinner />
-                </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <Spinner />
+            )}
           </div>
         )}
       </div>
-    </Container>
+    </div>
   )
 }
 

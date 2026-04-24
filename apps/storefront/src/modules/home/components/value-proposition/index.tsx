@@ -1,5 +1,3 @@
-import { Heading, Text } from "@medusajs/ui"
-
 const points: { title: string; body: string }[] = [
   {
     title: "Premium Quality Products",
@@ -18,31 +16,35 @@ const points: { title: string; body: string }[] = [
 const ValueProposition = () => {
   return (
     <section
-      className="content-container py-16 small:py-24"
+      className="section-spacing bg-white border-b border-black"
       aria-labelledby="value-heading"
     >
-      <Heading
-        id="value-heading"
-        level="h2"
-        className="text-2xl small:text-3xl text-ui-fg-base font-medium mb-10"
-      >
-        Why Shams Tools
-      </Heading>
-      <ul className="grid grid-cols-1 md:grid-cols-3 gap-10">
-        {points.map((p) => (
-          <li key={p.title}>
-            <Heading
-              level="h3"
-              className="text-lg font-medium text-ui-fg-base mb-3"
-            >
-              {p.title}
-            </Heading>
-            <Text className="text-ui-fg-subtle text-sm leading-relaxed">
-              {p.body}
-            </Text>
-          </li>
-        ))}
-      </ul>
+      <div className="content-container">
+        <div className="mb-10">
+          <span className="font-mono text-xs uppercase tracking-[0.25em] block mb-2">
+            Why Choose Us
+          </span>
+          <h2 
+            id="value-heading"
+            className="font-display text-3xl small:text-4xl font-extrabold tracking-tight"
+          >
+            Why Shams Tools
+          </h2>
+        </div>
+        
+        <ul className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black">
+          {points.map((p, index) => (
+            <li key={p.title} className="bg-white p-8">
+              <h3 className="font-display text-xl font-bold mb-4">
+                {p.title}
+              </h3>
+              <p className="font-body text-base leading-relaxed text-gray-600">
+                {p.body}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }

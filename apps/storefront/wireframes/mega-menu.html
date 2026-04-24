@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mega Menu Wireframe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --wireframe-border: #1B0E0D;
+      --wireframe-bg: #E3E2DE;
+      --wireframe-gray: #D9D9D9;
+      --wireframe-dark: #1B0E0D;
+      --wireframe-muted: #6B7280;
+      --wireframe-accent: #C72A09;
+      --wireframe-neon: #31EF07;
+    }
+
+    * {
+      font-family: 'General Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--wireframe-bg);
+      background-image: radial-gradient(var(--wireframe-gray) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .wireframe-img {
+      background-color: #f3f4f6;
+      background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%, transparent 75%, #e5e7eb 75%, #e5e7eb),
+                        linear-gradient(45deg, #e5e7eb 25%, transparent 25%, transparent 75%, #e5e7eb 75%, #e5e7eb);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+    }
+
+    /* Wireframe block placeholder */
+    .block-placeholder {
+      background: repeating-linear-gradient(
+        45deg,
+        #f3f4f6,
+        #f3f4f6 10px,
+        #e5e7eb 10px,
+        #e5e7eb 20px
+      );
+      border: 2px dashed var(--wireframe-gray);
+    }
+
+    /* Alignment guide lines */
+    .guide-line-h {
+      border-top: 1px dashed var(--wireframe-neon);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .guide-line-v {
+      border-left: 1px dashed var(--wireframe-neon);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    /* Spacing indicators */
+    .spacing-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--wireframe-neon);
+      opacity: 0.6;
+      letter-spacing: 0.05em;
+    }
+
+    /* Hover state overlays */
+    .hover-indicator {
+      position: absolute;
+      inset: -2px;
+      border: 2px solid var(--wireframe-accent);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 150ms ease;
+    }
+
+    .has-hover:hover .hover-indicator {
+      opacity: 1;
+    }
+
+    .has-hover:hover {
+      background-color: rgba(199, 42, 9, 0.04);
+    }
+
+    /* Active state */
+    .is-active {
+      background-color: rgba(199, 42, 9, 0.08);
+      border-color: var(--wireframe-accent);
+    }
+
+    /* Mobile accordion */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 400ms ease, opacity 300ms ease;
+      opacity: 0;
+    }
+
+    .accordion-trigger:checked ~ .accordion-content {
+      max-height: 800px;
+      opacity: 1;
+    }
+
+    .accordion-trigger:checked ~ label .accordion-icon {
+      transform: rotate(180deg);
+    }
+
+    /* Mobile menu toggle */
+    .mobile-menu-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 400ms ease, opacity 300ms ease;
+      opacity: 0;
+    }
+
+    .mobile-menu-trigger:checked ~ .mobile-menu-panel {
+      max-height: 100vh;
+      opacity: 1;
+    }
+
+    /* Section labels */
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--wireframe-muted);
+    }
+
+    /* Border utility for wireframe sections */
+    .wireframe-border {
+      border: 1px solid var(--wireframe-gray);
+    }
+
+    .wireframe-border-b {
+      border-bottom: 1px solid var(--wireframe-gray);
+    }
+
+    .wireframe-border-t {
+      border-top: 1px solid var(--wireframe-gray);
+    }
+
+    .wireframe-border-l {
+      border-left: 1px solid var(--wireframe-gray);
+    }
+
+    /* Grid column dividers */
+    .col-divider > *:not(:last-child) {
+      border-right: 1px solid var(--wireframe-gray);
+    }
+
+    @media (max-width: 1023px) {
+      .col-divider > *:not(:last-child) {
+        border-right: none;
+        border-bottom: 1px solid var(--wireframe-gray);
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Hidden Checkboxes for Mobile State -->
+  <input type="checkbox" id="mobile-menu-toggle" class="mobile-menu-trigger hidden">
+  <input type="checkbox" id="mobile-categories-toggle" class="accordion-trigger hidden">
+
+  <!-- ========================================== -->
+  <!-- NAVIGATION BAR                             -->
+  <!-- ========================================== -->
+  <nav class="w-full bg-white relative z-50" style="border-bottom: 1px solid var(--wireframe-gray);">
+    <div class="w-full max-w-[1440px] mx-auto px-6">
+      <div class="h-20 flex items-center justify-between">
+
+        <!-- Logo / Brand -->
+        <a href="#" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 flex items-center justify-center" style="background-color: var(--wireframe-dark);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-lg font-bold tracking-tight" style="color: var(--wireframe-dark);">WIREFRAME</span>
+            <span class="section-label -mt-1">UI KIT v1.0</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <div class="hidden lg:flex items-center h-full">
+          <ul class="flex items-center h-full">
+            <li class="h-full flex items-center px-6 has-hover relative cursor-pointer">
+              <span class="hover-indicator"></span>
+              <a href="#" class="text-sm font-medium" style="color: var(--wireframe-muted);">Home</a>
+            </li>
+
+            <!-- ========================================== -->
+            <!-- MEGA MENU TRIGGER + DROPDOWN               -->
+            <!-- ========================================== -->
+            <li class="group h-full flex items-center relative">
+              <button class="h-full flex items-center gap-2 px-6 cursor-pointer has-hover relative" style="border-left: 1px solid var(--wireframe-gray); border-right: 1px solid var(--wireframe-gray);">
+                <span class="hover-indicator"></span>
+                <span class="text-sm font-bold" style="color: var(--wireframe-dark);">Products</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300 group-hover:rotate-180" style="color: var(--wireframe-muted);">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+
+              <!-- DESKTOP MEGA MENU DROPDOWN -->
+              <div
+                class="absolute top-full left-0 w-screen opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out"
+                style="background-color: var(--wireframe-bg); border-top: 2px solid var(--wireframe-dark); border-bottom: 2px solid var(--wireframe-dark);"
+              >
+                <div class="w-full max-w-[1440px] mx-auto">
+                  <!-- Grid with column dividers -->
+                  <div class="grid grid-cols-1 lg:grid-cols-12 col-divider">
+
+                    <!-- ========================================== -->
+                    <!-- COLUMN 1: CATEGORIES (3 cols desktop)      -->
+                    <!-- ========================================== -->
+                    <div class="lg:col-span-3 p-8">
+                      <div class="flex items-center gap-2 mb-6 section-label">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <line x1="8" y1="6" x2="21" y2="6"></line>
+                          <line x1="8" y1="12" x2="21" y2="12"></line>
+                          <line x1="8" y1="18" x2="21" y2="18"></line>
+                          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                        Categories
+                      </div>
+
+                      <ul class="space-y-1">
+                        <li>
+                          <a href="#" class="flex items-center justify-between py-2 px-3 -mx-3 text-sm font-medium has-hover relative transition-all hover:translate-x-1" style="color: var(--wireframe-dark);">
+                            <span class="hover-indicator"></span>
+                            <span>Power Tools</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-0 transition-opacity" style="color: var(--wireframe-accent);">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="flex items-center justify-between py-2 px-3 -mx-3 text-sm font-medium has-hover relative transition-all hover:translate-x-1" style="color: var(--wireframe-dark);">
+                            <span class="hover-indicator"></span>
+                            <span>Hand Tools</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-0 transition-opacity" style="color: var(--wireframe-accent);">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="flex items-center justify-between py-2 px-3 -mx-3 text-sm font-medium has-hover relative transition-all hover:translate-x-1" style="color: var(--wireframe-dark);">
+                            <span class="hover-indicator"></span>
+                            <span>Safety Equipment</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-0 transition-opacity" style="color: var(--wireframe-accent);">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="flex items-center justify-between py-2 px-3 -mx-3 text-sm font-medium has-hover relative transition-all hover:translate-x-1" style="color: var(--wireframe-dark);">
+                            <span class="hover-indicator"></span>
+                            <span>Building Materials</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-0 transition-opacity" style="color: var(--wireframe-accent);">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="flex items-center justify-between py-2 px-3 -mx-3 text-sm font-medium has-hover relative transition-all hover:translate-x-1" style="color: var(--wireframe-dark);">
+                            <span class="hover-indicator"></span>
+                            <span>Electrical</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-0 transition-opacity" style="color: var(--wireframe-accent);">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="flex items-center justify-between py-2 px-3 -mx-3 text-sm font-medium has-hover relative transition-all hover:translate-x-1" style="color: var(--wireframe-dark);">
+                            <span class="hover-indicator"></span>
+                            <span>Plumbing</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-0 transition-opacity" style="color: var(--wireframe-accent);">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="flex items-center justify-between py-2 px-3 -mx-3 text-sm font-medium has-hover relative transition-all hover:translate-x-1" style="color: var(--wireframe-dark);">
+                            <span class="hover-indicator"></span>
+                            <span>Paints & Coatings</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-0 transition-opacity" style="color: var(--wireframe-accent);">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="flex items-center justify-between py-2 px-3 -mx-3 text-sm font-medium has-hover relative transition-all hover:translate-x-1" style="color: var(--wireframe-dark);">
+                            <span class="hover-indicator"></span>
+                            <span>Hardware</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="opacity-0 transition-opacity" style="color: var(--wireframe-accent);">
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </a>
+                        </li>
+                      </ul>
+
+                      <a href="#" class="inline-block mt-6 text-xs font-bold underline decoration-2 underline-offset-4 transition-colors hover:text-[#C72A09]" style="color: var(--wireframe-dark);">
+                        View Full Catalog
+                      </a>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- COLUMN 2: FEATURED LINKS (3 cols desktop)    -->
+                    <!-- ========================================== -->
+                    <div class="lg:col-span-3 p-8">
+                      <div class="flex items-center gap-2 mb-6 section-label">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        Featured
+                      </div>
+
+                      <ul class="space-y-4">
+                        <li>
+                          <a href="#" class="group/card flex items-start gap-4 p-3 -mx-3 has-hover relative">
+                            <span class="hover-indicator"></span>
+                            <div class="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-colors" style="background-color: var(--wireframe-gray); border: 1px solid var(--wireframe-gray);">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--wireframe-muted);">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                              </svg>
+                            </div>
+                            <div>
+                              <h4 class="text-sm font-bold transition-colors group-hover/card:text-[#C72A09]" style="color: var(--wireframe-dark);">New Arrivals</h4>
+                              <p class="text-xs mt-1" style="color: var(--wireframe-muted);">Fresh drops every week</p>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="group/card flex items-start gap-4 p-3 -mx-3 has-hover relative">
+                            <span class="hover-indicator"></span>
+                            <div class="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-colors" style="background-color: var(--wireframe-gray); border: 1px solid var(--wireframe-gray);">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--wireframe-muted);">
+                                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                                <path d="M4 22h16"></path>
+                                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                              </svg>
+                            </div>
+                            <div>
+                              <h4 class="text-sm font-bold transition-colors group-hover/card:text-[#C72A09]" style="color: var(--wireframe-dark);">Best Sellers</h4>
+                              <p class="text-xs mt-1" style="color: var(--wireframe-muted);">Customer favorites this month</p>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="group/card flex items-start gap-4 p-3 -mx-3 has-hover relative">
+                            <span class="hover-indicator"></span>
+                            <div class="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-colors" style="background-color: var(--wireframe-gray); border: 1px solid var(--wireframe-gray);">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--wireframe-muted);">
+                                <line x1="19" y1="5" x2="5" y2="19"></line>
+                                <circle cx="6.5" cy="6.5" r="2.5"></circle>
+                                <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                              </svg>
+                            </div>
+                            <div>
+                              <h4 class="text-sm font-bold transition-colors group-hover/card:text-[#C72A09]" style="color: var(--wireframe-dark);">Clearance</h4>
+                              <p class="text-xs mt-1" style="color: var(--wireframe-muted);">Up to 70% off selected stock</p>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="group/card flex items-start gap-4 p-3 -mx-3 has-hover relative">
+                            <span class="hover-indicator"></span>
+                            <div class="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-colors" style="background-color: var(--wireframe-gray); border: 1px solid var(--wireframe-gray);">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--wireframe-muted);">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                              </svg>
+                            </div>
+                            <div>
+                              <h4 class="text-sm font-bold transition-colors group-hover/card:text-[#C72A09]" style="color: var(--wireframe-dark);">Brands A-Z</h4>
+                              <p class="text-xs mt-1" style="color: var(--wireframe-muted);">Browse by manufacturer</p>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="group/card flex items-start gap-4 p-3 -mx-3 has-hover relative">
+                            <span class="hover-indicator"></span>
+                            <div class="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-colors" style="background-color: var(--wireframe-gray); border: 1px solid var(--wireframe-gray);">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--wireframe-muted);">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                              </svg>
+                            </div>
+                            <div>
+                              <h4 class="text-sm font-bold transition-colors group-hover/card:text-[#C72A09]" style="color: var(--wireframe-dark);">Spec Sheets</h4>
+                              <p class="text-xs mt-1" style="color: var(--wireframe-muted);">Technical documentation</p>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" class="group/card flex items-start gap-4 p-3 -mx-3 has-hover relative">
+                            <span class="hover-indicator"></span>
+                            <div class="w-10 h-10 flex items-center justify-center flex-shrink-0 transition-colors" style="background-color: var(--wireframe-gray); border: 1px solid var(--wireframe-gray);">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--wireframe-muted);">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                              </svg>
+                            </div>
+                            <div>
+                              <h4 class="text-sm font-bold transition-colors group-hover/card:text-[#C72A09]" style="color: var(--wireframe-dark);">Bulk Orders</h4>
+                              <p class="text-xs mt-1" style="color: var(--wireframe-muted);">Volume pricing for trade</p>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- COLUMN 3: PROMO BLOCK (6 cols desktop)      -->
+                    <!-- ========================================== -->
+                    <div class="lg:col-span-6 p-8">
+                      <div class="h-full w-full p-8 relative overflow-hidden group/promo" style="background-color: var(--wireframe-dark);">
+                        <!-- Decorative bg element -->
+                        <div class="absolute -right-10 -top-10 w-40 h-40 opacity-10 rounded-full transition-transform duration-700 group-hover/promo:scale-150" style="background-color: white;"></div>
+
+                        <div class="relative z-10 flex flex-col lg:flex-row h-full gap-8">
+                          <!-- Text Content -->
+                          <div class="flex-1 flex flex-col justify-center">
+                            <span class="inline-block px-3 py-1 text-xs font-medium w-fit mb-4" style="background-color: rgba(255,255,255,0.1); color: white;">LIMITED OFFER</span>
+                            <h3 class="text-2xl lg:text-3xl font-bold mb-4 leading-tight" style="color: var(--wireframe-bg);">Professional Tool<br>Kit Launch Event</h3>
+                            <p class="text-sm mb-8 max-w-[260px]" style="color: var(--wireframe-gray);">Get early access to our exclusive professional-grade tool collection. Members receive additional 15% off.</p>
+                            <button class="w-fit px-6 py-3 text-sm font-bold flex items-center gap-2 transition-colors hover:bg-[#D9D9D9]" style="background-color: var(--wireframe-bg); color: var(--wireframe-dark);">
+                              Shop Collection
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                              </svg>
+                            </button>
+                          </div>
+
+                          <!-- Wireframe Image Placeholder -->
+                          <div class="w-full lg:w-1/2 flex items-center justify-center">
+                            <div class="w-full aspect-[4/3] wireframe-img flex items-center justify-center relative" style="border: 2px dashed var(--wireframe-muted);">
+                              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color: var(--wireframe-muted);">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                              </svg>
+                              <div class="absolute bottom-2 right-2 section-label" style="color: var(--wireframe-muted);">400 x 300</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li class="h-full flex items-center px-6 has-hover relative cursor-pointer">
+              <span class="hover-indicator"></span>
+              <a href="#" class="text-sm font-medium" style="color: var(--wireframe-muted);">About</a>
+            </li>
+            <li class="h-full flex items-center px-6 has-hover relative cursor-pointer">
+              <span class="hover-indicator"></span>
+              <a href="#" class="text-sm font-medium" style="color: var(--wireframe-muted);">Contact</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Desktop Utility Icons -->
+        <div class="hidden lg:flex items-center gap-6">
+          <button class="transition-colors hover:text-[#C72A09]" style="color: var(--wireframe-muted);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+          <button class="transition-colors hover:text-[#C72A09] relative" style="color: var(--wireframe-muted);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-white" style="background-color: var(--wireframe-accent);"></span>
+          </button>
+          <a href="#" class="px-5 py-2.5 text-sm font-bold text-white transition-colors hover:opacity-90" style="background-color: var(--wireframe-dark);">
+            Sign In
+          </a>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <label for="mobile-menu-toggle" class="lg:hidden p-2 cursor-pointer transition-colors hover:bg-gray-100" style="color: var(--wireframe-dark);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </label>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MOBILE MENU PANEL                            -->
+    <!-- ========================================== -->
+    <div class="mobile-menu-panel lg:hidden w-full" style="background-color: white; border-top: 2px solid var(--wireframe-gray);">
+      <div class="p-6 space-y-2">
+
+        <a href="#" class="block py-3 text-lg font-bold wireframe-border-b" style="color: var(--wireframe-dark);">Home</a>
+
+        <!-- Mobile Accordion: Products -->
+        <div class="wireframe-border-b pb-2">
+          <label for="mobile-categories-toggle" class="flex items-center justify-between py-3 cursor-pointer">
+            <span class="text-lg font-bold" style="color: var(--wireframe-dark);">Products</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="accordion-icon transition-transform duration-300" style="color: var(--wireframe-muted);">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </label>
+
+          <div class="accordion-content">
+            <div class="pl-4 space-y-6 pt-2">
+
+              <!-- Mobile Categories -->
+              <div class="space-y-2">
+                <div class="section-label mb-2">Categories</div>
+                <a href="#" class="block py-2 text-sm" style="color: var(--wireframe-muted);">Power Tools</a>
+                <a href="#" class="block py-2 text-sm" style="color: var(--wireframe-muted);">Hand Tools</a>
+                <a href="#" class="block py-2 text-sm" style="color: var(--wireframe-muted);">Safety Equipment</a>
+                <a href="#" class="block py-2 text-sm" style="color: var(--wireframe-muted);">Building Materials</a>
+                <a href="#" class="block py-2 text-sm" style="color: var(--wireframe-muted);">Electrical</a>
+                <a href="#" class="block py-2 text-sm" style="color: var(--wireframe-muted);">Plumbing</a>
+              </div>
+
+              <!-- Mobile Featured -->
+              <div class="space-y-2">
+                <div class="section-label mb-2">Featured</div>
+                <a href="#" class="flex items-center gap-3 py-2 text-sm font-medium" style="color: var(--wireframe-dark);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--wireframe-muted);">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                  New Arrivals
+                </a>
+                <a href="#" class="flex items-center gap-3 py-2 text-sm font-medium" style="color: var(--wireframe-dark);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--wireframe-muted);">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                    <path d="M4 22h16"></path>
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                  </svg>
+                  Best Sellers
+                </a>
+                <a href="#" class="flex items-center gap-3 py-2 text-sm font-medium" style="color: var(--wireframe-dark);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--wireframe-muted);">
+                    <line x1="19" y1="5" x2="5" y2="19"></line>
+                    <circle cx="6.5" cy="6.5" r="2.5"></circle>
+                    <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                  </svg>
+                  Clearance
+                </a>
+              </div>
+
+              <!-- Mobile Promo Block -->
+              <div class="p-4" style="background-color: var(--wireframe-bg); border: 1px solid var(--wireframe-gray);">
+                <div class="aspect-video wireframe-img mb-3 flex items-center justify-center" style="border: 2px dashed var(--wireframe-gray);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color: var(--wireframe-muted);">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <h4 class="font-bold text-sm" style="color: var(--wireframe-dark);">Summer Sale</h4>
+                <p class="text-xs mt-1 mb-3" style="color: var(--wireframe-muted);">Up to 50% off select items</p>
+                <button class="w-full py-2 text-xs font-bold text-white" style="background-color: var(--wireframe-dark);">Shop Now</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <a href="#" class="block py-3 text-lg font-bold wireframe-border-b" style="color: var(--wireframe-dark);">About</a>
+        <a href="#" class="block py-3 text-lg font-bold wireframe-border-b" style="color: var(--wireframe-dark);">Contact</a>
+
+        <div class="pt-4 flex flex-col gap-3">
+          <a href="#" class="block w-full py-3 text-center text-sm font-bold" style="border: 2px solid var(--wireframe-dark); color: var(--wireframe-dark);">Sign In</a>
+          <a href="#" class="block w-full py-3 text-center text-sm font-bold text-white" style="background-color: var(--wireframe-dark);">Create Account</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================== -->
+  <!-- SPACING & ALIGNMENT GUIDES                   -->
+  <!-- ========================================== -->
+  <div class="w-full max-w-[1440px] mx-auto px-6 mt-4 mb-2 hidden lg:flex items-center gap-4">
+    <span class="spacing-label">GRID: 12 COLS / MAX-WIDTH: 1440PX</span>
+    <div class="flex-1 h-px" style="border-top: 1px dashed var(--wireframe-neon); opacity: 0.4;"></div>
+    <span class="spacing-label">GUTTER: 24PX / PADDING: 32PX</span>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- PAGE CONTENT PLACEHOLDERS                    -->
+  <!-- ========================================== -->
+  <main class="w-full max-w-[1440px] mx-auto px-6 mt-8 pb-20">
+    <!-- Hero Section Wireframe -->
+    <div class="w-full h-[400px] bg-white p-3 mb-6" style="border: 2px solid var(--wireframe-gray);">
+      <div class="w-full h-full block-placeholder flex items-center justify-center flex-col gap-4">
+        <span class="text-sm font-medium" style="color: var(--wireframe-muted);">Hero Banner Area</span>
+        <div class="w-16 h-1" style="background-color: var(--wireframe-gray);"></div>
+        <span class="section-label">1280 x 400</span>
+      </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <div class="md:col-span-8 h-64 bg-white p-3" style="border: 2px solid var(--wireframe-gray);">
+        <div class="w-full h-full block-placeholder flex items-center justify-center">
+          <span class="text-sm font-medium" style="color: var(--wireframe-muted);">Main Content Area</span>
+        </div>
+      </div>
+      <div class="md:col-span-4 h-64 bg-white p-3" style="border: 2px solid var(--wireframe-gray);">
+        <div class="w-full h-full block-placeholder flex items-center justify-center">
+          <span class="text-sm font-medium" style="color: var(--wireframe-muted);">Sidebar / Filters</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Grid Placeholder -->
+    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="h-72 bg-white p-3" style="border: 2px solid var(--wireframe-gray);">
+        <div class="w-full h-full block-placeholder flex flex-col items-center justify-center gap-3">
+          <div class="w-16 h-16 wireframe-img" style="border: 1px dashed var(--wireframe-gray);"></div>
+          <span class="text-xs font-medium" style="color: var(--wireframe-muted);">Product Card 1</span>
+        </div>
+      </div>
+      <div class="h-72 bg-white p-3" style="border: 2px solid var(--wireframe-gray);">
+        <div class="w-full h-full block-placeholder flex flex-col items-center justify-center gap-3">
+          <div class="w-16 h-16 wireframe-img" style="border: 1px dashed var(--wireframe-gray);"></div>
+          <span class="text-xs font-medium" style="color: var(--wireframe-muted);">Product Card 2</span>
+        </div>
+      </div>
+      <div class="h-72 bg-white p-3" style="border: 2px solid var(--wireframe-gray);">
+        <div class="w-full h-full block-placeholder flex flex-col items-center justify-center gap-3">
+          <div class="w-16 h-16 wireframe-img" style="border: 1px dashed var(--wireframe-gray);"></div>
+          <span class="text-xs font-medium" style="color: var(--wireframe-muted);">Product Card 3</span>
+        </div>
+      </div>
+      <div class="h-72 bg-white p-3" style="border: 2px solid var(--wireframe-gray);">
+        <div class="w-full h-full block-placeholder flex flex-col items-center justify-center gap-3">
+          <div class="w-16 h-16 wireframe-img" style="border: 1px dashed var(--wireframe-gray);"></div>
+          <span class="text-xs font-medium" style="color: var(--wireframe-muted);">Product Card 4</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- INTERACTION GUIDE OVERLAY                    -->
+  <!-- ========================================== -->
+  <div class="fixed bottom-6 right-6 p-4 z-40 hidden lg:block max-w-xs" style="background-color: var(--wireframe-dark);">
+    <h4 class="font-bold text-sm flex items-center gap-2" style="color: var(--wireframe-bg);">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      Interaction Guide
+    </h4>
+    <p class="text-xs mt-2 leading-relaxed" style="color: var(--wireframe-gray);">
+      Hover over <span class="font-mono px-1" style="background-color: rgba(255,255,255,0.15);">Products</span> in the nav to reveal the mega menu. Red borders indicate hover states. Accordion uses CSS-only toggle on mobile.
+    </p>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- BREAKPOINT INDICATOR                         -->
+  <!-- ========================================== -->
+  <div class="fixed bottom-6 left-6 px-3 py-1 z-40">
+    <span class="section-label hidden sm:block lg:hidden" style="color: var(--wireframe-accent);">TABLET: 2-COL LAYOUT</span>
+    <span class="section-label sm:hidden" style="color: var(--wireframe-accent);">MOBILE: SINGLE COL + ACCORDION</span>
+    <span class="section-label hidden lg:block" style="color: var(--wireframe-neon);">DESKTOP: 3-COL SIDE-BY-SIDE</span>
+  </div>
+
+</body>
+</html>

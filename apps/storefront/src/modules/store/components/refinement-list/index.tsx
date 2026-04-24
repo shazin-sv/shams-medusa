@@ -1,12 +1,10 @@
 "use client"
 
+import { HttpTypes } from "@medusajs/types"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback } from "react"
-
-import SortProducts, { SortOptions } from "./sort-products"
-import { Container } from "@medusajs/ui"
 import SearchInResults from "./search-in-results"
-import { HttpTypes } from "@medusajs/types"
+import SortProducts, { SortOptions } from "./sort-products"
 import CategoryList from "./category-list"
 
 type RefinementListProps = {
@@ -44,22 +42,27 @@ const RefinementList = ({
   }
 
   return (
-    <div className="flex flex-col divide-neutral-200 small:w-1/5 w-full gap-3">
-      <Container className="flex flex-col divide-y divide-neutral-200 p-0 w-full">
-        <SearchInResults listName={listName} />
-        <SortProducts
-          sortBy={sortBy}
-          setQueryParams={setQueryParams}
-          data-testid={dataTestId}
-        />
-      </Container>
+    <aside className="flex w-full flex-col gap-4 small:w-[280px] small:shrink-0">
+      <div className="surface-card overflow-hidden">
+        <div className="border-b border-slate-200 px-5 py-4">
+          <div className="text-sm font-bold text-slate-950">Refine products</div>
+          <p className="mt-1 text-sm text-slate-500">Sort results and browse categories faster.</p>
+        </div>
+        <div className="p-4">
+          <SearchInResults listName={listName} />
+          <div className="mt-3">
+            <SortProducts
+              sortBy={sortBy}
+              setQueryParams={setQueryParams}
+              data-testid={dataTestId}
+            />
+          </div>
+        </div>
+      </div>
       {categories && (
-        <CategoryList
-          categories={categories}
-          currentCategory={currentCategory}
-        />
+        <CategoryList categories={categories} currentCategory={currentCategory} />
       )}
-    </div>
+    </aside>
   )
 }
 

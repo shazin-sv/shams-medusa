@@ -27,10 +27,12 @@ export default async function Checkout({
 
   return (
     <Wrapper cart={cart}>
-      <div className="grid grid-cols-1 small:grid-cols-[1fr_416px] content-container gap-2 py-24 h-full">
-        <CheckoutForm cart={cart} customer={customer} />
-        <div className="relative">
-          <CheckoutSummary cart={cart} />
+      <div className="bg-slate-50 py-8 small:py-10">
+        <div className="content-container grid grid-cols-1 gap-6 small:grid-cols-[1fr_400px] small:items-start">
+          <CheckoutForm cart={cart} customer={customer} />
+          <div className="relative">
+            <CheckoutSummary cart={cart} />
+          </div>
         </div>
       </div>
     </Wrapper>

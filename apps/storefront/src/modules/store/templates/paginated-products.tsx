@@ -4,7 +4,6 @@ import ProductPreview from "@/modules/products/components/product-preview"
 import { Pagination } from "@/modules/store/components/pagination"
 import { SortOptions } from "@/modules/store/components/refinement-list/sort-products"
 import { B2BCustomer } from "@/types"
-import { Container } from "@medusajs/ui"
 
 const PRODUCT_LIMIT = 12
 
@@ -15,6 +14,7 @@ type PaginatedProductsParams = {
   id?: string[]
   order?: string
   customer_group_id?: string
+  q?: string
 }
 
 export default async function PaginatedProducts({
@@ -25,6 +25,7 @@ export default async function PaginatedProducts({
   productsIds,
   countryCode,
   customer,
+  query,
 }: {
   sortBy?: SortOptions
   page: number
@@ -33,6 +34,7 @@ export default async function PaginatedProducts({
   productsIds?: string[]
   countryCode: string
   customer?: B2BCustomer | null
+  query?: string
 }) {
   const queryParams: PaginatedProductsParams = {
     limit: 12,
@@ -48,6 +50,10 @@ export default async function PaginatedProducts({
     queryParams["id"] = productsIds
   }
 
+  if (query) {
+    queryParams["q"] = query
+  }
+
   if (sortBy === "created_at") {
     queryParams["order"] = "created_at"
   }
@@ -58,7 +64,7 @@ export default async function PaginatedProducts({
     return null
   }
 
-  let {
+  const {
     response: { products, count },
   } = await listProductsWithSort({
     page,
@@ -70,9 +76,14 @@ export default async function PaginatedProducts({
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
 
   return (
-    <>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between rounded-3xl border border-slate-200 bg-white px-5 py-4 text-sm text-slate-500">
+        <span>{count} products available{query ? ` for "${query}"` : ""}</span>
+        <span>{customer ? "Personalized pricing ready" : "Sign in for account features"}</span>
+      </div>
+
       <ul
-        className="grid grid-cols-1 w-full small:grid-cols-3 medium:grid-cols-4 gap-3"
+        className="grid grid-cols-1 gap-5 small:grid-cols-2 medium:grid-cols-3 large:grid-cols-4"
         data-testid="products-list"
       >
         {products.length > 0 ? (
@@ -84,18 +95,28 @@ export default async function PaginatedProducts({
             )
           })
         ) : (
-          <Container className="text-center text-sm text-neutral-500">
-            No products found for this category.
-          </Container>
+          <li className="col-span-full">
+            <div className="surface-card py-16 text-center">
+              <h3 className="text-2xl font-extrabold tracking-[-0.04em] text-slate-950">
+                No products found
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-slate-500">
+                Try a different category or sorting option to explore more items.
+              </p>
+            </div>
+          </li>
         )}
       </ul>
+
       {totalPages > 1 && (
-        <Pagination
-          data-testid="product-pagination"
-          page={page}
-          totalPages={totalPages}
-        />
+        <div className="flex justify-center pt-4">
+          <Pagination
+            data-testid="product-pagination"
+            page={page}
+            totalPages={totalPages}
+          />
+        </div>
       )}
-    </>
+    </div>
   )
 }

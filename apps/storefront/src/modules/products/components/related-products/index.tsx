@@ -1,7 +1,6 @@
 import { listProducts } from "@/lib/data/products"
 import { getRegion } from "@/lib/data/regions"
 import { HttpTypes } from "@medusajs/types"
-import { Heading } from "@medusajs/ui"
 import Product from "../product-preview"
 
 type RelatedProductsProps = {
@@ -19,12 +18,12 @@ export default async function RelatedProducts({
     return null
   }
 
-  // edit this function to define your related products logic
   const queryParams: HttpTypes.StoreProductParams & {
     tag_id?: string[]
     collection_id?: string[]
     is_giftcard?: boolean
   } = {}
+
   if (region?.id) {
     queryParams.region_id = region.id
   }
@@ -52,17 +51,24 @@ export default async function RelatedProducts({
   }
 
   return (
-    <div className="flex flex-col gap-y-6 small:py-16 py-6 small:px-24 px-6 bg-neutral-100">
-      <Heading level="h2" className="text-xl text-neutral-950 font-normal">
-        Other customers also viewed
-      </Heading>
-      <ul className="grid grid-cols-1 small:grid-cols-3 medium:grid-cols-4 gap-x-2 gap-y-8">
-        {products.map((product) => (
-          <li key={product.id}>
-            <Product region={region} product={product} />
-          </li>
-        ))}
-      </ul>
-    </div>
+    <section className="section-shell pt-0">
+      <div className="surface-card p-6 small:p-8">
+        <div className="section-heading mb-6">
+          <span className="section-kicker">You may also need</span>
+          <h2 className="section-title !text-[clamp(1.8rem,3vw,2.6rem)]">Related products</h2>
+          <p className="section-copy">
+            Keep shoppers moving with a cleaner set of related recommendations.
+          </p>
+        </div>
+
+        <ul className="grid grid-cols-1 gap-5 small:grid-cols-2 medium:grid-cols-3 large:grid-cols-4">
+          {products.map((item) => (
+            <li key={item.id}>
+              <Product region={region} product={item} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   )
 }

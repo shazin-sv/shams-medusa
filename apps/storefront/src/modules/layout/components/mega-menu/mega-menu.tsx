@@ -1,141 +1,126 @@
 "use client"
 
 import { HttpTypes } from "@medusajs/types"
-import { clx } from "@medusajs/ui"
+import { ChevronDown } from "lucide-react"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useMemo, useState } from "react"
 
 const MegaMenu = ({
   categories,
 }: {
   categories: HttpTypes.StoreProductCategory[]
 }) => {
-  const [isHovered, setIsHovered] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<
-    HttpTypes.StoreProductCategory["id"] | null
-  >(null)
-
   const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(false)
 
-  const mainCategories = categories.filter(
-    (category) => !category.parent_category_id
+  const mainCategories = useMemo(
+    () => categories.filter((category) => !category.parent_category_id),
+    [categories]
   )
 
+  const selectedCategory = mainCategories[0]
+
   const getSubCategories = (categoryId: string) => {
-    return categories.filter(
-      (category) => category.parent_category_id === categoryId
-    )
+    return categories.filter((category) => category.parent_category_id === categoryId)
   }
-
-  let menuTimeout: NodeJS.Timeout | null = null
-
-  const handleMenuHover = () => {
-    if (menuTimeout) {
-      clearTimeout(menuTimeout)
-    }
-    setIsHovered(true)
-  }
-
-  const handleMenuLeave = () => {
-    menuTimeout = setTimeout(() => {
-      setIsHovered(false)
-    }, 300)
-
-    return () => {
-      if (menuTimeout) {
-        clearTimeout(menuTimeout)
-      }
-    }
-  }
-
-  let categoryTimeout: NodeJS.Timeout | null = null
-
-  const handleCategoryHover = (categoryId: string) => {
-    categoryTimeout = setTimeout(() => {
-      setSelectedCategory(categoryId)
-    }, 200)
-
-    return () => {
-      if (categoryTimeout) {
-        clearTimeout(categoryTimeout)
-      }
-    }
-  }
-
-  const handleCategoryLeave = () => {
-    if (categoryTimeout) {
-      clearTimeout(categoryTimeout)
-    }
-  }
-
-  useEffect(() => {
-    setIsHovered(false)
-  }, [pathname])
 
   return (
-    <>
-      <div
-        onMouseEnter={handleMenuHover}
-        onMouseLeave={handleMenuLeave}
-        className="z-50"
+    <div
+      className="relative hidden large:block"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      <LocalizedClientLink
+        href="/store"
+        className="nav-link inline-flex items-center gap-1"
       >
-        <LocalizedClientLink
-          className="hover:text-ui-fg-base hover:bg-neutral-100 rounded-full px-3 py-2"
-          href="/store"
-        >
-          Products
-        </LocalizedClientLink>
-        {isHovered && (
-          <div className="fixed left-0 right-0 top-[60px] flex gap-32 py-10 px-20 bg-white border-b border-neutral-200 ">
-            <div className="flex flex-col gap-2">
-              {mainCategories.map((category) => (
-                <LocalizedClientLink
-                  key={category.id}
-                  href={`/categories/${category.handle}`}
-                  className={clx(
-                    "hover:bg-neutral-100 hover:cursor-pointer rounded-full px-3 py-2 w-fit font-medium",
-                    selectedCategory === category.id && "bg-neutral-100"
-                  )}
-                  onMouseEnter={() => handleCategoryHover(category.id)}
-                  onMouseLeave={handleCategoryLeave}
-                >
-                  {category.name}
-                </LocalizedClientLink>
-              ))}
-            </div>
-            {selectedCategory && (
-              <div className="grid grid-cols-4 gap-16">
-                {getSubCategories(selectedCategory).map((category) => (
-                  <div key={category.id} className="flex flex-col gap-2">
-                    <LocalizedClientLink
-                      className="font-medium text-zinc-500 hover:underline"
-                      href={`/categories/${category.handle}`}
-                    >
-                      {category.name}
-                    </LocalizedClientLink>
-                    <div className="flex flex-col gap-2">
-                      {getSubCategories(category.id).map((subCategory) => (
-                        <LocalizedClientLink
-                          key={subCategory.id}
-                          className="hover:underline"
-                          href={`/categories/${subCategory.handle}`}
-                        >
-                          {subCategory.name}
-                        </LocalizedClientLink>
-                      ))}
-                    </div>
-                  </div>
+        Products
+        <ChevronDown className="h-4 w-4" />
+      </LocalizedClientLink>
+
+      {isOpen && (
+        <div className="absolute left-0 top-[calc(100%+1.25rem)] z-50 w-[860px] overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.16)]">
+          <div className="grid grid-cols-[220px_1fr]">
+            <div className="border-r border-slate-200 bg-slate-50 p-5">
+              <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">
+                Main categories
+              </div>
+              <div className="mt-4 flex flex-col gap-2">
+                {mainCategories.map((category) => (
+                  <LocalizedClientLink
+                    key={category.id}
+                    href={`/categories/${category.handle}`}
+                    className={`rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                      pathname.includes(category.handle)
+                        ? "bg-slate-950 text-white"
+                        : "bg-white text-slate-800 hover:bg-slate-100"
+                    }`}
+                  >
+                    {category.name}
+                  </LocalizedClientLink>
                 ))}
               </div>
-            )}
+            </div>
+
+            <div className="p-6">
+              <div className="section-heading mb-6">
+                <span className="section-kicker">Shop faster</span>
+                <h3 className="m-0 text-2xl font-extrabold tracking-[-0.04em] text-slate-950">
+                  Browse industrial essentials by category
+                </h3>
+                <p className="m-0 max-w-2xl text-sm leading-7 text-slate-500">
+                  Jump into your most-used categories and get to product pages with less friction.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                {mainCategories.slice(0, 6).map((category) => {
+                  const children = getSubCategories(category.id)
+
+                  return (
+                    <div key={category.id} className="rounded-3xl border border-slate-200 p-4">
+                      <LocalizedClientLink
+                        href={`/categories/${category.handle}`}
+                        className="text-sm font-bold text-slate-950"
+                      >
+                        {category.name}
+                      </LocalizedClientLink>
+                      <div className="mt-3 flex flex-col gap-2">
+                        {children.length > 0 ? (
+                          children.slice(0, 4).map((child) => (
+                            <LocalizedClientLink
+                              key={child.id}
+                              href={`/categories/${child.handle}`}
+                              className="text-sm text-slate-500 hover:text-slate-900"
+                            >
+                              {child.name}
+                            </LocalizedClientLink>
+                          ))
+                        ) : (
+                          <p className="text-sm text-slate-500">
+                            Browse products in {category.name.toLowerCase()}.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              <div className="mt-5 rounded-3xl bg-slate-950 p-5 text-white">
+                <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#f4b400]">
+                  Quick route
+                </div>
+                <p className="mt-2 text-sm leading-7 text-slate-300">
+                  Start with {selectedCategory?.name || "featured categories"} or head straight to the full product listing to compare prices and availability.
+                </p>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-      {isHovered && (
-        <div className="fixed inset-0 mt-[60px] blur-sm backdrop-blur-sm z-[-1]" />
+        </div>
       )}
-    </>
+    </div>
   )
 }
 

@@ -3,76 +3,48 @@ import { retrieveCustomer } from "@/lib/data/customer"
 import AccountButton from "@/modules/account/components/account-button"
 import CartButton from "@/modules/cart/components/cart-button"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
-import FilePlus from "@/modules/common/icons/file-plus"
-import LogoIcon from "@/modules/common/icons/logo"
 import { MegaMenuWrapper } from "@/modules/layout/components/mega-menu"
-import { RequestQuoteConfirmation } from "@/modules/quotes/components/request-quote-confirmation"
-import { RequestQuotePrompt } from "@/modules/quotes/components/request-quote-prompt"
 import SkeletonAccountButton from "@/modules/skeletons/components/skeleton-account-button"
 import SkeletonCartButton from "@/modules/skeletons/components/skeleton-cart-button"
-import SkeletonMegaMenu from "@/modules/skeletons/components/skeleton-mega-menu"
 import { Suspense } from "react"
+import HeaderSearch from "./header-search"
+import MobileMenu from "./mobile-menu"
+import TopStrip from "./top-strip"
 
 export async function NavigationHeader() {
   const customer = await retrieveCustomer().catch(() => null)
-  const cart = await retrieveCart()
+  const cart = await retrieveCart().catch(() => null)
+
+  const totalItems =
+    cart?.items?.reduce((acc, item) => {
+      return acc + item.quantity
+    }, 0) || 0
 
   return (
-    <div className="sticky top-0 inset-x-0 group bg-white text-zinc-900 small:p-4 p-2 text-sm border-b duration-200 border-ui-border-base z-50">
-      <header className="flex w-full content-container relative small:mx-auto justify-between">
-        <div className="small:mx-auto flex justify-between items-center min-w-full">
-          <div className="flex items-center small:space-x-4">
-            <LocalizedClientLink
-              className="hover:text-ui-fg-base flex items-center w-fit"
-              href="/"
-            >
-              <h1 className="small:text-base text-sm font-medium flex items-center">
-                <LogoIcon className="inline mr-2" />
-                Shams Tools
-              </h1>
+    <header className="sticky top-0 z-[100] border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+      <TopStrip />
+
+      <div className="content-container flex flex-col gap-4 py-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-6">
+            <LocalizedClientLink href="/" className="flex min-w-0 flex-col">
+              <span className="text-[0.68rem] font-bold uppercase tracking-[0.26em] text-[#d59a00]">
+                Shamstools
+              </span>
+              <span className="font-[Manrope] text-2xl font-extrabold tracking-[-0.04em] text-slate-950">
+                SHAMS TOOLS
+              </span>
             </LocalizedClientLink>
-
-            <nav>
-              <ul className="space-x-4 hidden small:flex">
-                <li>
-                  <Suspense fallback={<SkeletonMegaMenu />}>
-                    <MegaMenuWrapper />
-                  </Suspense>
-                </li>
-              </ul>
-            </nav>
           </div>
-          <div className="flex justify-end items-center gap-2">
-            <div className="relative mr-2 hidden small:inline-flex">
-              <input
-                disabled
-                type="text"
-                placeholder="Search for products"
-                className="bg-gray-100 text-zinc-900 px-4 py-2 rounded-full pr-10 shadow-borders-base hidden small:inline-block hover:cursor-not-allowed"
-                title="Install a search provider to enable product search"
-              />
+
+          <div className="hidden min-w-0 flex-1 large:flex large:justify-center">
+            <HeaderSearch />
+          </div>
+
+          <div className="flex items-center gap-3 small:gap-4">
+            <div className="hidden rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 medium:block">
+              {totalItems} item{totalItems === 1 ? "" : "s"}
             </div>
-
-            <div className="h-4 w-px bg-neutral-300" />
-
-            {customer && cart?.items && cart.items.length > 0 ? (
-              <RequestQuoteConfirmation>
-                <button
-                  className="flex gap-1.5 items-center rounded-2xl bg-none shadow-none border-none hover:bg-neutral-100 px-2 py-1"
-                  // disabled={isPendingApproval}
-                >
-                  <FilePlus />
-                  <span className="hidden small:inline-block">Quote</span>
-                </button>
-              </RequestQuoteConfirmation>
-            ) : (
-              <RequestQuotePrompt>
-                <button className="flex gap-1.5 items-center rounded-2xl bg-none shadow-none border-none hover:bg-neutral-100 px-2 py-1">
-                  <FilePlus />
-                  <span className="hidden small:inline-block">Quote</span>
-                </button>
-              </RequestQuotePrompt>
-            )}
 
             <Suspense fallback={<SkeletonAccountButton />}>
               <AccountButton customer={customer} />
@@ -81,9 +53,36 @@ export async function NavigationHeader() {
             <Suspense fallback={<SkeletonCartButton />}>
               <CartButton />
             </Suspense>
+
+            <div className="small:hidden">
+              <MobileMenu
+                accountLabel={customer ? customer.first_name || "Account" : "Log in"}
+                itemCount={totalItems}
+              />
+            </div>
           </div>
         </div>
-      </header>
-    </div>
+
+        <div className="large:hidden">
+          <HeaderSearch />
+        </div>
+
+        <div className="hidden items-center gap-7 border-t border-slate-200 pt-3 small:flex">
+          <LocalizedClientLink href="/store" className="nav-link">
+            Shop All
+          </LocalizedClientLink>
+          <MegaMenuWrapper />
+          <LocalizedClientLink href="/store" className="nav-link">
+            Deals
+          </LocalizedClientLink>
+          <LocalizedClientLink href="/account" className="nav-link">
+            B2B Account
+          </LocalizedClientLink>
+          <LocalizedClientLink href="/cart" className="nav-link">
+            Cart
+          </LocalizedClientLink>
+        </div>
+      </div>
+    </header>
   )
 }

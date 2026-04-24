@@ -10,7 +10,7 @@ import Divider from "@/modules/common/components/divider"
 import { B2BCart } from "@/types"
 import { ApprovalStatusType } from "@/types/approval"
 import { CheckCircleSolid } from "@medusajs/icons"
-import { clx, Container, Heading, Text, useToggleState } from "@medusajs/ui"
+import { Heading, Text, clx, useToggleState } from "@medusajs/ui"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useState } from "react"
 
@@ -18,11 +18,9 @@ const BillingAddress = ({ cart }: { cart: B2BCart | null }) => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
-
   const [error, setError] = useState<string | null>(null)
 
   const isOpen = searchParams.get("step") === "billing-address"
-
   const cartApprovalStatus = cart?.approval_status?.status
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
@@ -35,11 +33,11 @@ const BillingAddress = ({ cart }: { cart: B2BCart | null }) => {
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams)
       params.set(name, value)
-
       return params.toString()
     },
     [searchParams]
   )
+
   const handleEdit = () => {
     router.push(pathname + "?" + createQueryString("step", "billing-address"), {
       scroll: false,
@@ -67,25 +65,19 @@ const BillingAddress = ({ cart }: { cart: B2BCart | null }) => {
   }
 
   return (
-    <Container>
-      <div className="flex flex-col gap-y-2">
-        <div className="flex small:flex-row flex-col small:items-center justify-between w-full">
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 small:p-6">
+      <div className="flex flex-col gap-y-3">
+        <div className="flex flex-col justify-between gap-3 small:flex-row small:items-center">
           <div className="flex gap-x-2 items-center">
             <Heading
               level="h2"
-              className={clx(
-                "flex flex-row text-xl gap-x-2 items-center font-medium",
-                {
-                  "opacity-50 pointer-events-none select-none":
-                    !isOpen && !cart?.billing_address?.address_1,
-                }
-              )}
+              className={clx("flex flex-row items-center gap-x-2 text-xl font-bold text-slate-950", {
+                "pointer-events-none select-none opacity-50": !isOpen && !cart?.billing_address?.address_1,
+              })}
             >
-              Billing Address
+              Billing address
             </Heading>
-            {!isOpen && cart?.billing_address?.address_1 && (
-              <CheckCircleSolid />
-            )}
+            {!isOpen && cart?.billing_address?.address_1 && <CheckCircleSolid />}
           </div>
           {cart?.shipping_address?.address_1 && (
             <CheckboxWithLabel
@@ -106,17 +98,11 @@ const BillingAddress = ({ cart }: { cart: B2BCart | null }) => {
               <div className="py-2">
                 <BillingAddressForm cart={cart} />
               </div>
-              <div className="flex flex-col gap-y-2 items-end">
-                <SubmitButton
-                  className="mt-6"
-                  data-testid="submit-address-button"
-                >
-                  Next step
+              <div className="flex flex-col items-end gap-y-2">
+                <SubmitButton className="mt-4" data-testid="submit-address-button">
+                  Continue
                 </SubmitButton>
-                <ErrorMessage
-                  error={error}
-                  data-testid="address-error-message"
-                />
+                <ErrorMessage error={error} data-testid="address-error-message" />
               </div>
             </form>
           </div>
@@ -127,13 +113,8 @@ const BillingAddress = ({ cart }: { cart: B2BCart | null }) => {
             <div className="text-small-regular">
               <div className="flex items-start gap-x-8">
                 <div className="flex" data-testid="billing-address-summary">
-                  <Text className="txt-medium text-ui-fg-subtle">
-                    {cart.billing_address.first_name}{" "}
-                    {cart.billing_address.last_name},{" "}
-                    {cart.billing_address.address_1},{" "}
-                    {cart.billing_address.postal_code},{" "}
-                    {cart.billing_address.city},{" "}
-                    {cart.billing_address.country_code?.toUpperCase()}
+                  <Text className="text-sm leading-7 text-slate-600">
+                    {cart.billing_address.first_name} {cart.billing_address.last_name}, {cart.billing_address.address_1}, {cart.billing_address.postal_code}, {cart.billing_address.city}, {cart.billing_address.country_code?.toUpperCase()}
                   </Text>
                 </div>
               </div>
@@ -141,7 +122,7 @@ const BillingAddress = ({ cart }: { cart: B2BCart | null }) => {
           )
         )}
       </div>
-    </Container>
+    </div>
   )
 }
 

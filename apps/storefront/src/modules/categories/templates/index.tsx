@@ -17,12 +17,14 @@ export default function CategoryTemplate({
   sortBy,
   page,
   countryCode,
+  query,
 }: {
   categories: HttpTypes.StoreProductCategory[]
   currentCategory: HttpTypes.StoreProductCategory
   sortBy?: SortOptions
   page?: string
   countryCode: string
+  query?: string
 }) {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
@@ -76,6 +78,7 @@ export default function CategoryTemplate({
                   page={pageNumber}
                   categoryId={currentCategory.id}
                   countryCode={countryCode}
+                  query={query}
                 />
               </Suspense>
             )}

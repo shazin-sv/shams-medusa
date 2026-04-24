@@ -1,154 +1,95 @@
-import { listCategories } from "@/lib/data/categories"
-import { listCollections } from "@/lib/data/collections"
-import { Text, clx } from "@medusajs/ui"
-
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
-import MedusaCTA from "@/modules/layout/components/medusa-cta"
+import { Headset, MapPin, ShieldCheck, Truck } from "lucide-react"
 
-export default async function Footer() {
-  const { collections } = await listCollections({
-    offset: "0",
-    limit: "6",
-  })
-  const product_categories = await listCategories({
-    offset: 0,
-    limit: 6,
-  })
-
+const Footer = () => {
   return (
-    <footer className="border-t border-ui-border-base w-full">
-      <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
-          <div>
-            <LocalizedClientLink
-              href="/"
-              className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
-            >
-              Shams Tools
-            </LocalizedClientLink>
-            <p className="text-ui-fg-muted txt-compact-small mt-4 max-w-xs leading-relaxed">
-              Al Qandeel Street, Al Aziziyah District, Jeddah 23334, KSA
-            </p>
-            <p className="text-ui-fg-muted txt-compact-small mt-2">
-              <a
-                href="mailto:contact@shamstools.com"
-                className="hover:text-ui-fg-base"
-              >
-                contact@shamstools.com
-              </a>
-              <br />
-              <a
-                href="https://wa.me/966539329973"
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-ui-fg-base"
-              >
-                +966 53 932 9973
-              </a>
-            </p>
+    <footer className="mt-16 bg-slate-950 text-white">
+      <div className="border-b border-white/10">
+        <div className="content-container grid gap-4 py-6 small:grid-cols-2 large:grid-cols-4">
+          {[
+            {
+              icon: Truck,
+              title: "Fast fulfilment",
+              text: "Delivery support for Jeddah, Riyadh and wider KSA coverage.",
+            },
+            {
+              icon: ShieldCheck,
+              title: "Reliable sourcing",
+              text: "Professional tools and materials selected for contractors and serious buyers.",
+            },
+            {
+              icon: Headset,
+              title: "Sales support",
+              text: "Assistance for product selection, quotes and bulk purchasing workflows.",
+            },
+            {
+              icon: MapPin,
+              title: "Based in Saudi Arabia",
+              text: "A storefront built around local industrial and construction demand.",
+            },
+          ].map((item) => {
+            const Icon = item.icon
+
+            return (
+              <div key={item.title} className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <Icon className="mb-3 h-5 w-5 text-[#f4b400]" />
+                <h3 className="text-base font-bold text-white">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-300">{item.text}</p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="content-container grid gap-10 py-12 small:grid-cols-2 large:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
+        <div>
+          <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#f4b400]">
+            Shamstools
           </div>
-          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
-            {product_categories && product_categories?.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Categories
-                </span>
-                <ul
-                  className="grid grid-cols-1 gap-2"
-                  data-testid="footer-categories"
-                >
-                  {product_categories?.slice(0, 6).map((c) => {
-                    if (c.parent_category) {
-                      return
-                    }
+          <h2 className="mt-3 font-[Manrope] text-3xl font-extrabold tracking-[-0.05em] text-white">
+            Industrial tools and building materials with a more trustworthy buying experience.
+          </h2>
+          <p className="mt-4 max-w-md text-sm leading-7 text-slate-300">
+            Browse professional products, compare pricing, request quotes, and checkout with a cleaner storefront built for real eCommerce use.
+          </p>
+        </div>
 
-                    const children =
-                      c.category_children?.map((child) => ({
-                        name: child.name,
-                        handle: child.handle,
-                        id: child.id,
-                      })) || null
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-[0.16em] text-white">Shop</h3>
+          <ul className="mt-4 space-y-3 text-sm text-slate-300">
+            <li><LocalizedClientLink href="/store">All Products</LocalizedClientLink></li>
+            <li><LocalizedClientLink href="/store?sortBy=created_at">New Arrivals</LocalizedClientLink></li>
+            <li><LocalizedClientLink href="/cart">Cart</LocalizedClientLink></li>
+            <li><LocalizedClientLink href="/account">Account</LocalizedClientLink></li>
+          </ul>
+        </div>
 
-                    return (
-                      <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
-                        key={c.id}
-                      >
-                        <LocalizedClientLink
-                          className={clx(
-                            "hover:text-ui-fg-base",
-                            children && "txt-small-plus"
-                          )}
-                          href={`/categories/${c.handle}`}
-                          data-testid="category-link"
-                        >
-                          {c.name}
-                        </LocalizedClientLink>
-                        {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
-                            {children &&
-                              children.map((child) => (
-                                <li key={child.id}>
-                                  <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
-                                    href={`/categories/${child.handle}`}
-                                    data-testid="category-link"
-                                  >
-                                    {child.name}
-                                  </LocalizedClientLink>
-                                </li>
-                              ))}
-                          </ul>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )}
-            {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Collections
-                </span>
-                <ul
-                  className={clx(
-                    "grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small",
-                    {
-                      "grid-cols-2": (collections?.length || 0) > 3,
-                    }
-                  )}
-                >
-                  {collections?.slice(0, 6).map((c) => (
-                    <li key={c.id}>
-                      <LocalizedClientLink
-                        className="hover:text-ui-fg-base"
-                        href={`/collections/${c.handle}`}
-                      >
-                        {c.title}
-                      </LocalizedClientLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">Hours</span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
-                <li>Morning: 07:30 AM – 02:00 PM</li>
-                <li>Evening: 04:30 PM – 08:00 PM</li>
-                <li>Friday: Closed</li>
-              </ul>
-            </div>
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-[0.16em] text-white">Why customers buy</h3>
+          <ul className="mt-4 space-y-3 text-sm text-slate-300">
+            <li>Clear product browsing</li>
+            <li>Industrial-focused presentation</li>
+            <li>Bulk and quote-friendly checkout</li>
+            <li>Responsive shopping flow</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-bold uppercase tracking-[0.16em] text-white">Store note</h3>
+          <div className="mt-4 rounded-3xl border border-white/10 bg-white/5 p-5 text-sm leading-7 text-slate-300">
+            This redesigned storefront keeps the Medusa backend intact while upgrading the customer experience on homepage, product discovery, cart, and checkout.
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
-          <Text className="txt-compact-small">
-            © 2026 Shams Tools. All rights reserved.
-          </Text>
-          <MedusaCTA />
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="content-container flex flex-col gap-3 py-5 text-xs uppercase tracking-[0.16em] text-slate-400 small:flex-row small:items-center small:justify-between">
+          <span>© 2026 Shams Tools. All rights reserved.</span>
+          <span>Professional tools, hardware and materials for Saudi Arabia</span>
         </div>
       </div>
     </footer>
   )
 }
+
+export default Footer

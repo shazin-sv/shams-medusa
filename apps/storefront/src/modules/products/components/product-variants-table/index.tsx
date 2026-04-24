@@ -1,11 +1,10 @@
 import { addToCartEventBus } from "@/lib/data/cart-event-bus"
 import { getProductPrice } from "@/lib/util/get-product-price"
 import { HttpTypes, StoreProduct, StoreProductVariant } from "@medusajs/types"
-import { clx, Table } from "@medusajs/ui"
+import { Table, clx } from "@medusajs/ui"
 import Button from "@/modules/common/components/button"
-import ShoppingBag from "@/modules/common/icons/shopping-bag"
-import { useState } from "react"
 import BulkTableQuantity from "../bulk-table-quantity"
+import { useState } from "react"
 
 const ProductVariantsTable = ({
   product,
@@ -72,23 +71,23 @@ const ProductVariantsTable = ({
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="overflow-x-auto p-px">
-        <Table className="w-full rounded-xl overflow-hidden shadow-borders-base border-none ">
+    <div className="flex flex-col gap-5">
+      <div className="overflow-x-auto rounded-3xl border border-slate-200 bg-white p-2">
+        <Table className="w-full overflow-hidden rounded-2xl border-none">
           <Table.Header className="border-t-0">
-            <Table.Row className="bg-neutral-100 border-none hover:!bg-neutral-100">
+            <Table.Row className="border-none bg-slate-50 hover:!bg-slate-50">
               <Table.HeaderCell className="px-4">SKU</Table.HeaderCell>
               {product.options?.map((option) => {
                 if (option.title === "Default option") {
                   return null
                 }
                 return (
-                  <Table.HeaderCell key={option.id} className="px-4 border-x">
+                  <Table.HeaderCell key={option.id} className="border-x border-slate-200 px-4">
                     {option.title}
                   </Table.HeaderCell>
                 )
               })}
-              <Table.HeaderCell className="px-4 border-x">
+              <Table.HeaderCell className="border-x border-slate-200 px-4">
                 Price
               </Table.HeaderCell>
               <Table.HeaderCell className="px-4">Quantity</Table.HeaderCell>
@@ -108,21 +107,21 @@ const ProductVariantsTable = ({
                     "border-b-0": index === product.variants?.length! - 1,
                   })}
                 >
-                  <Table.Cell className="px-4">{variant.sku}</Table.Cell>
-                  {variant.options?.map((option, index) => {
+                  <Table.Cell className="px-4 text-sm text-slate-700">{variant.sku}</Table.Cell>
+                  {variant.options?.map((option) => {
                     if (option.value === "Default option value") {
                       return null
                     }
                     return (
-                      <Table.Cell key={option.id} className="px-4 border-x">
+                      <Table.Cell key={option.id} className="border-x border-slate-200 px-4 text-sm text-slate-700">
                         {option.value}
                       </Table.Cell>
                     )
                   })}
-                  <Table.Cell className="px-4 border-x">
+                  <Table.Cell className="border-x border-slate-200 px-4 text-sm font-semibold text-slate-950">
                     {variantPrice?.calculated_price}
                   </Table.Cell>
-                  <Table.Cell className="pl-1 !pr-1">
+                  <Table.Cell className="!pr-1 pl-1">
                     <BulkTableQuantity
                       variantId={variant.id}
                       onChange={handleQuantityChange}
@@ -134,22 +133,21 @@ const ProductVariantsTable = ({
           </Table.Body>
         </Table>
       </div>
-      <Button
-        onClick={handleAddToCart}
-        variant="primary"
-        className="w-full h-10"
-        isLoading={isAdding}
-        disabled={totalQuantity === 0}
-        data-testid="add-product-button"
-      >
-        <ShoppingBag
-          className="text-white"
-          fill={totalQuantity === 0 ? "none" : "#fff"}
-        />
-        {totalQuantity === 0
-          ? "Choose product variant(s) above"
-          : "Add to cart"}
-      </Button>
+      <div className="grid gap-3 small:grid-cols-2">
+        <Button
+          onClick={handleAddToCart}
+          variant="primary"
+          className="w-full"
+          isLoading={isAdding}
+          disabled={totalQuantity === 0}
+          data-testid="add-product-button"
+        >
+          {totalQuantity === 0 ? "Choose quantity" : "Add to cart"}
+        </Button>
+        <Button variant="secondary" className="w-full">
+          Request quote
+        </Button>
+      </div>
     </div>
   )
 }

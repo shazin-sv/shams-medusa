@@ -72,64 +72,63 @@ const ImageGallery = ({ product }: ImageGalleryProps) => {
   }, [handleArrowClick])
 
   return (
-    <div className="flex flex-col justify-end items-center bg-neutral-100 p-8 pt-0 gap-6 w-full h-full">
-      <div
-        className="relative aspect-[29/34] w-full overflow-hidden"
-        id={selectedImage.id}
-      >
-        <div className="flex p-48">
-          {!!selectedImage.url && (
-            <Image
-              src={selectedImage.url}
-              priority
-              className="absolute inset-0 rounded-rounded p-20 overflow-visible object-contain"
-              alt={(selectedImage.metadata?.alt as string) || ""}
-              fill
-              sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
-            />
-          )}
-        </div>
+    <div className="surface-card flex flex-col gap-5 overflow-hidden p-5 small:p-6">
+      <div className="relative aspect-square overflow-hidden rounded-[24px] bg-slate-100" id={selectedImage.id}>
+        {!!selectedImage.url && (
+          <Image
+            src={selectedImage.url}
+            priority
+            className="absolute inset-0 h-full w-full object-contain p-8"
+            alt={(selectedImage.metadata?.alt as string) || product.title || ""}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        )}
       </div>
-      <div className="flex small:flex-row flex-col-reverse gap-y-3 justify-between w-full">
+
+      <div className="flex flex-col gap-4 small:flex-row small:items-center small:justify-between">
+        <ul className="no-scrollbar flex gap-3 overflow-x-auto">
+          {images.map((image, index) => (
+            <li key={image.id}>
+              <button
+                type="button"
+                className={clx(
+                  "relative h-20 w-20 overflow-hidden rounded-2xl border bg-slate-100",
+                  index === selectedImageIndex
+                    ? "border-slate-900"
+                    : "border-slate-200"
+                )}
+                onClick={() => handleImageClick(image)}
+              >
+                <Image
+                  src={image.url}
+                  alt={(image.metadata?.alt as string) || ""}
+                  fill
+                  className="object-contain p-2"
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+
         {images.length > 1 && (
-          <div className="flex flex-row gap-x-2 self-end small:self-auto">
+          <div className="flex gap-2 self-end small:self-auto">
             <IconButton
               disabled={selectedImageIndex === 0}
-              className="rounded-full items-center justify-center"
+              className="rounded-full border border-slate-200 bg-white"
               onClick={() => handleArrowClick("left")}
             >
               <ArrowLeftMini />
             </IconButton>
             <IconButton
               disabled={selectedImageIndex === images.length - 1}
-              className="rounded-full items-center justify-center"
+              className="rounded-full border border-slate-200 bg-white"
               onClick={() => handleArrowClick("right")}
             >
               <ArrowRightMini />
             </IconButton>
           </div>
         )}
-        <ul className="flex flex-row gap-x-4 overflow-x-auto">
-          {images.map((image, index) => (
-            <li
-              key={image.id}
-              className="flex aspect-[1/1] w-8 h-8 rounded-rounded"
-              onClick={() => handleImageClick(image)}
-              role="button"
-            >
-              <Image
-                src={image.url}
-                alt={(image.metadata?.alt as string) || ""}
-                height={32}
-                width={32}
-                className={clx(
-                  index === selectedImageIndex ? "opacity-100" : "opacity-40",
-                  "hover:opacity-100 object-contain"
-                )}
-              />
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   )

@@ -9,6 +9,7 @@ export const Company = model.define("company", {
     .primaryKey(),
   name: model.text(),
   email: model.text(),
+  account_type: model.enum(["business", "normal"]).default("business"),
   phone: model.text().nullable(),
   address: model.text().nullable(),
   city: model.text().nullable(),

@@ -1,20 +1,19 @@
-import { getBaseURL } from "@/lib/util/env"
-import { Toaster } from "@medusajs/ui"
+import { Toaster as MedusaToaster } from "@medusajs/ui"
 import { Analytics } from "@vercel/analytics/next"
-import { GeistSans } from "geist/font/sans"
-import { Metadata } from "next"
-import "@/styles/globals.css"
+import { ToastContainer } from "@/modules/common/components/toast"
+import "../styles/globals.css"
 
-export const metadata: Metadata = {
-  metadataBase: new URL(getBaseURL()),
+export const metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000"),
 }
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-mode="light" className={GeistSans.variable}>
+    <html lang="en" data-mode="light">
       <body>
-        <main className="relative">{props.children}</main>
-        <Toaster className="z-[99999]" position="bottom-left" />
+        <main className="relative min-h-screen">{props.children}</main>
+        <MedusaToaster className="z-[99999]" position="bottom-left" />
+        <ToastContainer />
         <Analytics />
       </body>
     </html>

@@ -3,7 +3,7 @@ import Radio from "@/modules/common/components/radio"
 import SquareMinus from "@/modules/common/icons/square-minus"
 import SquarePlus from "@/modules/common/icons/square-plus"
 import { HttpTypes } from "@medusajs/types"
-import { Container, Text } from "@medusajs/ui"
+import { Text } from "@medusajs/ui"
 import { usePathname, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 
@@ -34,6 +34,7 @@ const CategoryList = ({
   )
 
   const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategories((prev) =>
@@ -43,8 +44,6 @@ const CategoryList = ({
     )
   }
 
-  const searchParams = useSearchParams()
-
   const isCurrentCategory = (handle: string) =>
     pathname.split("/").slice(2).join("/") === `categories/${handle}`
 
@@ -52,9 +51,7 @@ const CategoryList = ({
     if (currentCategory) {
       const categoriesToExpand = getCategoriesToExpand(currentCategory)
       setExpandedCategories((prev) => {
-        const newCategories = categoriesToExpand.filter(
-          (cat) => !prev.includes(cat)
-        )
+        const newCategories = categoriesToExpand.filter((cat) => !prev.includes(cat))
         return newCategories.length ? [...prev, ...newCategories] : prev
       })
     }
@@ -63,14 +60,14 @@ const CategoryList = ({
   const getCategoryMarginLeft = useCallback(
     (category: HttpTypes.StoreProductCategory) => {
       let level = 0
-      let currentCategory = category
-      while (currentCategory.parent_category_id) {
+      let current = category
+      while (current.parent_category_id) {
         level++
-        currentCategory = categories.find(
-          (cat) => cat.id === currentCategory.parent_category_id
+        current = categories.find(
+          (cat) => cat.id === current.parent_category_id
         ) as HttpTypes.StoreProductCategory
       }
-      return level * 4
+      return `${level * 14}px`
     },
     [categories]
   )
@@ -82,21 +79,21 @@ const CategoryList = ({
 
     return (
       <li key={category.id}>
-        <div className={`flex items-center gap-2 mb-2 pl-${paddingLeft}`}>
+        <div className="mb-2 flex items-center gap-2" style={{ paddingLeft }}>
           {hasChildren ? (
-            <div className="flex items-center gap-2 hover:text-neutral-700">
+            <div className="flex items-center gap-2 text-sm text-slate-700">
               <button onClick={() => toggleCategory(category.id)}>
                 {isExpanded ? (
-                  <SquareMinus className="h-3 mx-1" />
+                  <SquareMinus className="mx-1 h-3" />
                 ) : (
-                  <SquarePlus className="h-3 mx-1" />
+                  <SquarePlus className="mx-1 h-3" />
                 )}
               </button>
               <LocalizedClientLink
                 href={`/categories/${category.handle}${
                   searchParams.size ? `?${searchParams.toString()}` : ""
                 }`}
-                className="flex gap-2 items-center hover:text-neutral-700"
+                className="font-medium hover:text-slate-950"
               >
                 {category.name} ({category.products?.length})
               </LocalizedClientLink>
@@ -106,7 +103,7 @@ const CategoryList = ({
               href={`/categories/${category.handle}${
                 searchParams.size ? `?${searchParams.toString()}` : ""
               }`}
-              className="flex gap-2 items-center hover:text-neutral-700 text-start hover:cursor-pointer"
+              className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-950"
             >
               <Radio checked={isCurrentCategory(category.handle)} />
               {category.name} ({category.products?.length})
@@ -116,9 +113,7 @@ const CategoryList = ({
         {hasChildren && isExpanded && (
           <ul>
             {category.category_children.map((childId) => {
-              const childCategory = categories.find(
-                (cat) => cat.id === childId.id
-              )
+              const childCategory = categories.find((cat) => cat.id === childId.id)
               return childCategory ? renderCategory(childCategory) : null
             })}
           </ul>
@@ -128,24 +123,21 @@ const CategoryList = ({
   }
 
   return (
-    <Container className="flex flex-col p-0 divide-y divide-neutral-200">
-      <div className="flex justify-between items-center p-3">
-        <Text className="text-sm font-medium">Categories</Text>
+    <div className="surface-card overflow-hidden">
+      <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+        <Text className="text-sm font-bold text-slate-950">Categories</Text>
         {pathname.includes("/categories") && (
-          <LocalizedClientLink
-            href="/store"
-            className="text-xs text-neutral-500 hover:text-neutral-700"
-          >
+          <LocalizedClientLink href="/store" className="text-xs font-semibold text-slate-500 hover:text-slate-900">
             Clear
           </LocalizedClientLink>
         )}
       </div>
-      <ul className="flex flex-col gap-3 text-sm p-3 text-neutral-500">
+      <ul className="flex flex-col gap-3 p-4 text-sm text-slate-500">
         {categories
           .filter((cat) => cat.parent_category_id === null)
           .map(renderCategory)}
       </ul>
-    </Container>
+    </div>
   )
 }
 

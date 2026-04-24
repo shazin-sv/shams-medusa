@@ -11,6 +11,7 @@ export const StoreCreateCompany = z
   .object({
     name: z.string(),
     email: z.string(),
+    account_type: z.enum(["business", "normal"]).optional(),
     currency_code: z.string(),
     phone: z.string().optional().nullable(),
     address: z.string().optional().nullable(),
@@ -31,6 +32,7 @@ export const StoreUpdateCompany = z
   .object({
     name: z.string().optional(),
     email: z.string().optional(),
+    account_type: z.enum(["business", "normal"]).optional(),
     currency_code: z.string().optional(),
     phone: z.string().optional().nullable(),
     address: z.string().optional().nullable(),

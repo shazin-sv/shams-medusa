@@ -2,14 +2,14 @@ import ShoppingBag from "@/modules/common/icons/shopping-bag"
 
 export default function SkeletonCartButton() {
   return (
-    <button className="transition-fg relative inline-flex w-fit items-center justify-center overflow-hidden outline-none txt-compact-small-plus gap-x-1.5 px-3 py-1.5 rounded-full hover:bg-neutral-100">
-      <ShoppingBag />
-      <span className="text-sm font-normal hidden small:inline-block">
+    <button className="flex items-center gap-2 border border-black px-3 py-1">
+      <ShoppingBag className="w-4 h-4" />
+      <span className="font-mono text-xs uppercase tracking-widest hidden small:inline-block">
         Cart
       </span>
-      <div className="bg-blue-500 text-white text-xs px-1.5 py-px rounded-full">
+      <span className="bg-black text-white font-mono text-[10px] px-1.5">
         0
-      </div>
+      </span>
     </button>
   )
 }

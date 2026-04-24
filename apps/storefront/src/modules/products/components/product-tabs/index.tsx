@@ -22,11 +22,11 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
   ]
 
   return (
-    <div className="w-full">
-      <Accordion type="multiple" className="flex flex-col gap-y-2">
+    <div className="surface-card overflow-hidden">
+      <Accordion type="multiple" className="flex flex-col gap-y-3 p-3 small:p-4">
         {tabs.map((tab, i) => (
           <Accordion.Item
-            className="bg-neutral-100 small:px-24 px-6"
+            className="rounded-3xl border border-slate-200 bg-white px-4 small:px-6"
             key={i}
             title={tab.label}
             headingSize="medium"
@@ -42,23 +42,21 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 
 const ProductSpecsTab = ({ product }: ProductTabsProps) => {
   return (
-    <div className="text-small-regular py-8 xl:w-2/3">
+    <div className="py-6 small:w-2/3">
       <Markdown
         components={{
           p: ({ children }) => (
-            <Text className="text-neutral-950 mb-2">{children}</Text>
+            <Text className="mb-3 text-sm leading-7 text-slate-600">{children}</Text>
           ),
           h2: ({ children }) => (
-            <Text className="text-xl text-neutral-950 my-4 font-semibold">
-              {children}
-            </Text>
+            <Text className="my-4 text-xl font-semibold text-slate-950">{children}</Text>
           ),
           h3: ({ children }) => (
-            <Text className="text-lg text-neutral-950 mb-2">{children}</Text>
+            <Text className="mb-2 text-lg font-semibold text-slate-950">{children}</Text>
           ),
         }}
       >
-        {product.description ? product.description : "-"}
+        {product.description ? product.description : "No description available yet."}
       </Markdown>
     </div>
   )
@@ -66,23 +64,23 @@ const ProductSpecsTab = ({ product }: ProductTabsProps) => {
 
 const ProductSpecificationsTab = ({ product }: ProductTabsProps) => {
   return (
-    <div className="text-small-regular py-8">
-      <Table className="rounded-lg shadow-borders-base overflow-hidden border-none">
+    <div className="py-6">
+      <Table className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
         <Table.Body>
           {product.weight && (
             <Table.Row>
-              <Table.Cell className="border-r">
-                <span className="font-semibold">Weight</span>
+              <Table.Cell className="border-r border-slate-200 font-semibold text-slate-950">
+                Weight
               </Table.Cell>
-              <Table.Cell className="px-4">{product.weight} grams</Table.Cell>
+              <Table.Cell className="px-4 text-slate-600">{product.weight} grams</Table.Cell>
             </Table.Row>
           )}
           {(product.height || product.width || product.length) && (
             <Table.Row>
-              <Table.Cell className="border-r">
-                <span className="font-semibold">Dimensions (HxWxL)</span>
+              <Table.Cell className="border-r border-slate-200 font-semibold text-slate-950">
+                Dimensions (H x W x L)
               </Table.Cell>
-              <Table.Cell className="px-4">
+              <Table.Cell className="px-4 text-slate-600">
                 {product.height}mm x {product.width}mm x {product.length}mm
               </Table.Cell>
             </Table.Row>
@@ -91,10 +89,10 @@ const ProductSpecificationsTab = ({ product }: ProductTabsProps) => {
           {product.metadata &&
             Object.entries(product.metadata).map(([key, value]) => (
               <Table.Row key={key}>
-                <Table.Cell className="border-r">
-                  <span className="font-semibold">{key}</span>
+                <Table.Cell className="border-r border-slate-200 font-semibold capitalize text-slate-950">
+                  {key.replace(/_/g, " ")}
                 </Table.Cell>
-                <Table.Cell className="px-4">
+                <Table.Cell className="px-4 text-slate-600">
                   <p>{value as string}</p>
                 </Table.Cell>
               </Table.Row>

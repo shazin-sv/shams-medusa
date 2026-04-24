@@ -8,6 +8,9 @@ import { notFound } from "next/navigation"
 
 export const dynamicParams = true
 
+// Disable static generation to prevent build timeouts
+export const dynamic = "force-dynamic"
+
 type Props = {
   params: { countryCode: string; handle: string }
 }

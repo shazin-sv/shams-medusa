@@ -1,4 +1,5 @@
 import { clx, Button as MedusaButton } from "@medusajs/ui"
+
 type ButtonProps = React.ComponentProps<typeof MedusaButton>
 
 const Button = ({
@@ -8,19 +9,22 @@ const Button = ({
 }: ButtonProps): React.ReactNode => {
   const variant = props.variant ?? "primary"
 
-  const className = clx(classNameProp, {
-    "!shadow-borders-base !border-none":
-      variant === "secondary" || props.disabled,
-    "!shadow-none bg-neutral-900 text-white":
-      variant === "primary" && !props.disabled,
-    "!shadow-none bg-transparent text-neutral-900": variant === "transparent",
-  })
+  const className = clx(
+    "!rounded-full !border text-sm font-semibold normal-case transition",
+    classNameProp,
+    {
+      "!border-[#f4b400] !bg-[#f4b400] !text-slate-950 hover:!border-[#d59a00] hover:!bg-[#d59a00]":
+        variant === "primary" && !props.disabled,
+      "!border-slate-900 !bg-slate-900 !text-white hover:!bg-black":
+        variant === "secondary" && !props.disabled,
+      "!border-slate-300 !bg-white !text-slate-900 hover:!bg-slate-50":
+        variant === "transparent",
+      "!border-slate-200 !bg-slate-100 !text-slate-400": props.disabled,
+    }
+  )
+
   return (
-    <MedusaButton
-      className={`!rounded-full text-sm font-normal ${className}`}
-      variant={variant}
-      {...props}
-    >
+    <MedusaButton className={className} variant={variant} {...props}>
       {children}
     </MedusaButton>
   )

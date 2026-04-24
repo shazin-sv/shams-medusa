@@ -1,7 +1,10 @@
 import { FindParams, PaginatedResponse } from "@medusajs/types";
 import { QueryCompany, QueryEmployee } from "./query";
 import { ModuleCompanyFilters, ModuleEmployeeFilters } from "./service";
-import { ModuleCompanySpendingLimitResetFrequency } from "./module";
+import {
+  ModuleCompanyAccountType,
+  ModuleCompanySpendingLimitResetFrequency,
+} from "./module";
 
 /* Filters */
 
@@ -26,6 +29,7 @@ export type AdminCreateCompany = {
   name: string;
   phone: string;
   email: string;
+  account_type?: ModuleCompanyAccountType;
   address: string | null;
   city: string | null;
   state: string | null;
@@ -76,6 +80,7 @@ export type StoreCreateCompany = {
   name: string;
   phone?: string | null;
   email: string;
+  account_type?: ModuleCompanyAccountType;
   address?: string | null;
   city?: string | null;
   state?: string | null;
@@ -90,6 +95,7 @@ export type StoreUpdateCompany = {
   name: string;
   phone: string;
   email: string;
+  account_type?: ModuleCompanyAccountType;
   address: string | null;
   city: string | null;
   state: string | null;

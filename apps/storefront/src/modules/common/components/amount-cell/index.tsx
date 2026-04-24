@@ -44,7 +44,7 @@ export const AmountCell = ({
           <span className="truncate line-through text-xs">
             {formatAmount(originalAmount!, currencyCode)}
           </span>
-          <span className="truncate text-blue-400 txt-small">{formatted}</span>
+          <span className="truncate text-[#FFC107] txt-small">{formatted}</span>
         </>
       ) : (
         <>

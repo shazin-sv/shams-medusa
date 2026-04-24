@@ -79,11 +79,20 @@ const CartDrawer = ({
 
   const pathname = usePathname()
 
-  const cancelTimer = () => {
+  const cancelTimerRef = useRef(() => {
     if (activeTimer) {
       clearTimeout(activeTimer)
     }
-  }
+  })
+
+  // keep ref current
+  useEffect(() => {
+    cancelTimerRef.current = () => {
+      if (activeTimer) {
+        clearTimeout(activeTimer)
+      }
+    }
+  }, [activeTimer])
 
   // open cart dropdown when modifying the cart items, but only if we're not on the cart page
   useEffect(() => {
@@ -96,11 +105,11 @@ const CartDrawer = ({
       return
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalItems, itemRef.current])
+  }, [totalItems])
 
   //close cart drawer when navigating to a different page
   useEffect(() => {
-    cancelTimer()
+    cancelTimerRef.current()
     close()
   }, [pathname])
 
@@ -113,20 +122,18 @@ const CartDrawer = ({
 
   return (
     <>
-      {isOpen && (
-        <div className="fixed inset-[-2rem] z-10 backdrop-blur-sm p-0" />
-      )}
       <Drawer
-        onMouseEnter={cancelTimer}
-        className="rounded-none m-0 p-0 bg-none z-50"
+        direction="right"
+        onMouseEnter={() => cancelTimerRef.current()}
+        className="z-50"
         open={isOpen}
         onOpenChange={setIsOpen}
         {...(props as any)}
       >
         <Drawer.Trigger asChild>
-          <button className="transition-fg relative inline-flex w-fit items-center justify-center overflow-hidden outline-none txt-compact-small-plus gap-x-1.5 px-3 py-1.5 rounded-full hover:bg-neutral-100">
-            <ShoppingBag />
-            <span className="text-sm font-normal hidden small:inline-block">
+          <button className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50">
+            <ShoppingBag className="h-4 w-4" />
+            <span className="hidden small:inline-block">
               {cart && items && items.length > 0
                 ? convertToLocale({
                     amount: subtotal,
@@ -134,14 +141,14 @@ const CartDrawer = ({
                   })
                 : "Cart"}
             </span>
-            <div className="bg-blue-500 text-white text-xs px-1.5 py-px rounded-full">
+            <span className="inline-flex min-w-6 items-center justify-center rounded-full bg-[#f4b400] px-2 py-0.5 text-[11px] font-bold text-slate-950">
               {totalItems}
-            </div>
+            </span>
           </button>
         </Drawer.Trigger>
         <Drawer.Content
-          className="z-50 rounded-none m-0 p-0 inset-y-0 sm:right-0"
-          onMouseEnter={cancelTimer}
+          className="fixed top-0 right-0 z-50 m-0 h-full w-full bg-white p-0 sm:w-[440px]"
+          onMouseEnter={() => cancelTimerRef.current()}
         >
           <Drawer.Header className="flex self-center">
             <Drawer.Title>
@@ -210,9 +217,9 @@ const CartDrawer = ({
                       </Button>
                     </LocalizedClientLink>
                     {spendLimitExceeded && (
-                      <div className="flex items-center gap-x-2 bg-neutral-100 p-3 rounded-md shadow-borders-base">
-                        <ExclamationCircle className="text-orange-500 w-fit overflow-visible" />
-                        <p className="text-neutral-950 text-xs">
+                      <div className="flex items-center gap-x-3 rounded-2xl border border-amber-200 bg-amber-50 p-3">
+                        <ExclamationCircle className="w-fit overflow-visible text-amber-600" />
+                        <p className="text-xs font-medium text-amber-900">
                           This order exceeds your spending limit. Please contact
                           your manager for approval.
                         </p>

@@ -17,11 +17,11 @@ const sortOptions = [
   },
   {
     value: "price_asc",
-    label: "Price: Low -> High",
+    label: "Price: Low to High",
   },
   {
     value: "price_desc",
-    label: "Price: High -> Low",
+    label: "Price: High to Low",
   },
 ]
 
@@ -35,11 +35,13 @@ const SortProducts = ({
   }
 
   return (
-    <div className="flex items-center gap-2 text-sm p-2 justify-between">
-      <span className="text-neutral-500">Sort by:</span>
+    <div>
+      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+        Sort by
+      </div>
       <div className="relative">
         <select
-          className="w-full pr-8 overflow-hidden focus:outline-none appearance-none"
+          className="form-control appearance-none pr-10 text-sm"
           title="Sort by"
           value={sortBy}
           onChange={(e) => handleChange(e.target.value as SortOptions)}
@@ -51,8 +53,8 @@ const SortProducts = ({
             </option>
           ))}
         </select>
-        <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-          <ChevronUpDown className="w-4 h-4 text-neutral-500" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+          <ChevronUpDown className="h-4 w-4 text-slate-400" />
         </div>
       </div>
     </div>

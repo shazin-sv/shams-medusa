@@ -3,7 +3,7 @@ import { convertToLocale } from "@/lib/util/money"
 import ItemFull from "@/modules/cart/components/item-full"
 import { B2BCart } from "@/types/global"
 import { StoreCartLineItem } from "@medusajs/types"
-import { Container, Text } from "@medusajs/ui"
+import { Text } from "@medusajs/ui"
 import { useMemo } from "react"
 
 type ItemsTemplateProps = {
@@ -30,8 +30,8 @@ const ItemsTemplate = ({
     isPendingAdminApproval || isPendingSalesManagerApproval
 
   return (
-    <div className="w-full flex flex-col gap-y-2">
-      <div className="flex flex-col gap-y-2 w-full">
+    <div className="flex w-full flex-col gap-y-4">
+      <div className="flex flex-col gap-y-4 w-full">
         {items &&
           items.map((item: StoreCartLineItem) => {
             return (
@@ -50,17 +50,17 @@ const ItemsTemplate = ({
           })}
       </div>
       {showTotal && (
-        <Container>
-          <div className="flex items-start justify-between h-full self-stretch">
-            <Text>Total: {totalQuantity} items</Text>
-            <Text>
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div className="flex items-start justify-between gap-4 self-stretch">
+            <Text className="text-sm text-slate-600">Total: {totalQuantity} items</Text>
+            <Text className="text-sm font-semibold text-slate-950">
               {convertToLocale({
                 amount: cart?.item_total,
                 currency_code: cart?.currency_code,
               })}
             </Text>
           </div>
-        </Container>
+        </div>
       )}
     </div>
   )
