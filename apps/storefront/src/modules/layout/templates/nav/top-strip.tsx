@@ -25,11 +25,11 @@ export default function TopStrip() {
       <div className="content-container flex min-h-9 items-center justify-between gap-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-200">
         <span className="inline-flex items-center gap-2">
           <ShieldCheck className="h-3.5 w-3.5 text-[#f4b400]" />
-          Retail and bulk orders supported
+          PLEASE WAIT FOR OUR LAUNCH
         </span>
         <span className="inline-flex items-center gap-2">
           <Truck className="h-3.5 w-3.5 text-[#f4b400]" />
-          Fast delivery across KSA
+          CURRENTLY IN DEVELOPMENT (BETA)
         </span>
       </div>
     </div>
