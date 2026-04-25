@@ -4,7 +4,7 @@ import { HttpTypes } from "@medusajs/types"
 import { ChevronDown } from "lucide-react"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
 import { usePathname } from "next/navigation"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 const MegaMenu = ({
   categories,
@@ -13,6 +13,7 @@ const MegaMenu = ({
 }) => {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const mainCategories = useMemo(
     () => categories.filter((category) => !category.parent_category_id),
@@ -21,6 +22,32 @@ const MegaMenu = ({
 
   const selectedCategory = mainCategories[0]
 
+  const openMenu = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+
+    setIsOpen(true)
+  }
+
+  const closeMenu = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+
+    closeTimeoutRef.current = setTimeout(() => {
+      setIsOpen(false)
+    }, 220)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+    }
+  }, [])
+
   const getSubCategories = (categoryId: string) => {
     return categories.filter((category) => category.parent_category_id === categoryId)
   }
@@ -28,8 +55,8 @@ const MegaMenu = ({
   return (
     <div
       className="relative hidden large:block"
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
+      onMouseEnter={openMenu}
+      onMouseLeave={closeMenu}
     >
       <LocalizedClientLink
         href="/store"
@@ -40,7 +67,8 @@ const MegaMenu = ({
       </LocalizedClientLink>
 
       {isOpen && (
-        <div className="absolute left-0 top-[calc(100%+1.25rem)] z-50 w-[860px] overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.16)]">
+        <div className="absolute left-0 top-full z-50 pt-4" onMouseEnter={openMenu} onMouseLeave={closeMenu}>
+          <div className="w-[860px] overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.16)]">
           <div className="grid grid-cols-[220px_1fr]">
             <div className="border-r border-slate-200 bg-slate-50 p-5">
               <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">

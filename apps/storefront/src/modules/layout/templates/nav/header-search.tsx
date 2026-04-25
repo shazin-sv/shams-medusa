@@ -1,8 +1,7 @@
 "use client"
 
-import { listProducts } from "@/lib/data/products"
+import { searchProducts, SearchSuggestion } from "@/lib/data/search"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
-import { HttpTypes } from "@medusajs/types"
 import { Search, X } from "lucide-react"
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -21,7 +20,7 @@ export default function HeaderSearch({
   const countryCode = typeof params.countryCode === "string" ? params.countryCode : "us"
 
   const [query, setQuery] = useState(searchParams.get("q") || "")
-  const [results, setResults] = useState<HttpTypes.StoreProduct[]>([])
+  const [results, setResults] = useState<SearchSuggestion[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
@@ -64,31 +63,8 @@ export default function HeaderSearch({
       setIsLoading(true)
 
       try {
-        const { response } = await listProducts({
-          pageParam: 1,
-          queryParams: {
-            limit: 8,
-          },
-          countryCode,
-        })
-
-        const normalized = query.trim().toLowerCase()
-        const matches = response.products.filter((product) => {
-          const haystack = [
-            product.title,
-            product.subtitle,
-            product.description,
-            product.handle,
-            ...(product.tags?.map((tag) => tag.value || tag.id || "") || []),
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase()
-
-          return haystack.includes(normalized)
-        })
-
-        setResults(matches.slice(0, 6))
+        const matches = await searchProducts(query, 6)
+        setResults(matches)
       } catch {
         setResults([])
       } finally {
