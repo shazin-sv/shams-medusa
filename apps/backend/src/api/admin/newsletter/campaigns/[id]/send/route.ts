@@ -46,10 +46,13 @@ export const POST = async (
     return res.status(400).json({ message: "SMTP sender is not configured" });
   }
 
-  await newsletterService.updateCampaigns({
+  const sendingResult = await newsletterService.updateCampaigns({
     id: campaign.id,
     status: "sending",
   });
+  const sendingCampaign = Array.isArray(sendingResult)
+    ? sendingResult[0]
+    : sendingResult;
 
   try {
     for (const recipient of recipients) {
@@ -61,24 +64,30 @@ export const POST = async (
       });
     }
 
-    const [updated] = await newsletterService.updateCampaigns({
+    const updatedResult = await newsletterService.updateCampaigns({
       id: campaign.id,
       status: "sent",
       sent_at: new Date(),
     });
+    const updated = Array.isArray(updatedResult)
+      ? updatedResult[0]
+      : updatedResult;
 
     return res.json({
       campaign: updated,
       recipients: recipients.length,
     });
   } catch (error: any) {
-    const [updated] = await newsletterService.updateCampaigns({
+    const failedResult = await newsletterService.updateCampaigns({
       id: campaign.id,
       status: "failed",
     });
+    const updated = Array.isArray(failedResult)
+      ? failedResult[0]
+      : failedResult;
 
     return res.status(500).json({
-      campaign: updated,
+      campaign: updated ?? sendingCampaign ?? campaign,
       message: error?.message || "Failed to send newsletter campaign",
     });
   }
