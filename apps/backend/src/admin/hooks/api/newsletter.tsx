@@ -1,9 +1,5 @@
 import { FetchError } from "@medusajs/js-sdk";
-import {
-  AdminNewsletterCampaignResponse,
-  AdminNewsletterCampaignsResponse,
-  AdminNewsletterSubscribersResponse,
-} from "../../../types";
+import { AdminNewsletterSubscribersResponse } from "../../../types";
 import {
   QueryKey,
   useMutation,
@@ -18,6 +14,7 @@ import { sdk } from "../../lib/client";
 export const newsletterQueryKey = queryKeysFactory("newsletter");
 
 export const useNewsletterSubscribers = (
+  filters?: { from?: string; to?: string },
   options?: UseQueryOptions<
     AdminNewsletterSubscribersResponse,
     FetchError,
@@ -26,115 +23,24 @@ export const useNewsletterSubscribers = (
   >
 ) => {
   return useQuery({
-    queryKey: newsletterQueryKey.list("subscribers"),
-    queryFn: () =>
-      sdk.client.fetch<AdminNewsletterSubscribersResponse>(
-        "/admin/newsletter/subscribers",
+    queryKey: newsletterQueryKey.list(["subscribers", filters]),
+    queryFn: () => {
+      const params = new URLSearchParams();
+
+      if (filters?.from) {
+        params.set("from", filters.from);
+      }
+
+      if (filters?.to) {
+        params.set("to", filters.to);
+      }
+
+      const query = params.toString();
+
+      return sdk.client.fetch<AdminNewsletterSubscribersResponse>(
+        `/admin/newsletter/subscribers${query ? `?${query}` : ""}`,
         { method: "GET" }
-      ),
-    ...options,
-  });
-};
-
-export const useNewsletterCampaigns = (
-  options?: UseQueryOptions<
-    AdminNewsletterCampaignsResponse,
-    FetchError,
-    AdminNewsletterCampaignsResponse,
-    QueryKey
-  >
-) => {
-  return useQuery({
-    queryKey: newsletterQueryKey.list("campaigns"),
-    queryFn: () =>
-      sdk.client.fetch<AdminNewsletterCampaignsResponse>(
-        "/admin/newsletter/campaigns",
-        { method: "GET" }
-      ),
-    ...options,
-  });
-};
-
-export const useCreateNewsletterCampaign = (
-  options?: UseMutationOptions<
-    AdminNewsletterCampaignResponse,
-    FetchError,
-    { subject: string; preview_text?: string; html: string }
-  >
-) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (body) =>
-      sdk.client.fetch<AdminNewsletterCampaignResponse>(
-        "/admin/newsletter/campaigns",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }
-      ),
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: newsletterQueryKey.list("campaigns"),
-      });
-      options?.onSuccess?.(data, variables, context);
-    },
-    ...options,
-  });
-};
-
-export const useUpdateNewsletterCampaign = (
-  options?: UseMutationOptions<
-    AdminNewsletterCampaignResponse,
-    FetchError,
-    { id: string; subject?: string; preview_text?: string | null; html?: string; status?: "draft" | "sending" | "sent" | "failed" }
-  >
-) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (body) =>
-      sdk.client.fetch<AdminNewsletterCampaignResponse>(
-        "/admin/newsletter/campaigns",
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }
-      ),
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: newsletterQueryKey.list("campaigns"),
-      });
-      options?.onSuccess?.(data, variables, context);
-    },
-    ...options,
-  });
-};
-
-export const useSendNewsletterCampaign = (
-  campaignId: string,
-  options?: UseMutationOptions<
-    any,
-    FetchError,
-    { test_email?: string; recipients?: string[] }
-  >
-) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (body) =>
-      sdk.client.fetch(`/admin/newsletter/campaigns/${campaignId}/send`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body,
-      }),
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: newsletterQueryKey.list("campaigns"),
-      });
-      options?.onSuccess?.(data, variables, context);
+      );
     },
     ...options,
   });
@@ -194,4 +100,37 @@ export const useImportNewsletterSubscribers = (
     },
     ...options,
   });
+};
+
+export const exportNewsletterSubscribersCsv = async (filters?: {
+  from?: string;
+  to?: string;
+}) => {
+  const params = new URLSearchParams();
+
+  if (filters?.from) {
+    params.set("from", filters.from);
+  }
+
+  if (filters?.to) {
+    params.set("to", filters.to);
+  }
+
+  const query = params.toString();
+  const response = await fetch(
+    `${sdk.client.getBaseUrl()}/admin/newsletter/subscribers/export${query ? `?${query}` : ""}`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept: "text/csv",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to export subscribers");
+  }
+
+  return response.text();
 };

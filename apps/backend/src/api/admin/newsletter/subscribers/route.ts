@@ -8,18 +8,38 @@ import {
   AdminImportNewsletterSubscribersType,
 } from "../validators";
 
+function normalizeDate(value?: string) {
+  return value ? new Date(value) : undefined;
+}
+
 export const GET = async (
   req: AuthenticatedMedusaRequest,
   res: MedusaResponse
 ) => {
   const newsletterService = req.scope.resolve(NEWSLETTER_MODULE);
+  const from = normalizeDate(req.query.from as string | undefined);
+  const to = normalizeDate(req.query.to as string | undefined);
+
   const subscribers = await newsletterService.listSubscribers({}, { take: 500 });
+  const filtered = subscribers.filter((subscriber: any) => {
+    const createdAt = new Date(subscriber.created_at);
+
+    if (from && createdAt < from) {
+      return false;
+    }
+
+    if (to && createdAt > to) {
+      return false;
+    }
+
+    return true;
+  });
 
   return res.json({
-    subscribers,
-    count: subscribers.length,
+    subscribers: filtered,
+    count: filtered.length,
     offset: 0,
-    limit: subscribers.length,
+    limit: filtered.length,
   });
 };
 
