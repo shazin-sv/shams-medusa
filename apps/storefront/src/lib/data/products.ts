@@ -146,21 +146,30 @@ export const listProductsWithSort = async ({
 }> => {
   const limit = queryParams?.limit || 12
 
-  const {
-    response: { products },
-  } = await listProducts({
-    pageParam: 0,
-    queryParams: {
-      ...queryParams,
-      limit: 100,
-    },
-    countryCode,
-  })
+  const allProducts: HttpTypes.StoreProduct[] = []
+  let nextPageParam: number | null = 1
+
+  while (nextPageParam) {
+    const {
+      response: { products },
+      nextPage,
+    } = await listProducts({
+      pageParam: nextPageParam,
+      queryParams: {
+        ...queryParams,
+        limit: 100,
+      },
+      countryCode,
+    })
+
+    allProducts.push(...products)
+    nextPageParam = nextPage
+  }
 
   const searchQuery = queryParams?.q?.trim().toLowerCase()
 
   const filteredProducts = searchQuery
-    ? products.filter((product) => {
+    ? allProducts.filter((product) => {
         const haystack = [
           product.title,
           product.subtitle,
@@ -174,7 +183,7 @@ export const listProductsWithSort = async ({
 
         return haystack.includes(searchQuery)
       })
-    : products
+    : allProducts
 
   const sortedProducts = sortProducts(filteredProducts, sortBy)
   const pageParam = (page - 1) * limit
