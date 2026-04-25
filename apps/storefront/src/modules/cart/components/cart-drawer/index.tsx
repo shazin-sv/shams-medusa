@@ -68,7 +68,6 @@ const CartDrawer = ({
     setActiveTimer(timer)
   }
 
-  // Clean up the timer when the component unmounts
   useEffect(() => {
     return () => {
       if (activeTimer) {
@@ -85,7 +84,6 @@ const CartDrawer = ({
     }
   })
 
-  // keep ref current
   useEffect(() => {
     cancelTimerRef.current = () => {
       if (activeTimer) {
@@ -94,7 +92,6 @@ const CartDrawer = ({
     }
   }, [activeTimer])
 
-  // open cart dropdown when modifying the cart items, but only if we're not on the cart page
   useEffect(() => {
     if (
       itemRef.current !== totalItems &&
@@ -102,12 +99,13 @@ const CartDrawer = ({
       !pathname.includes("/account")
     ) {
       timedOpen()
+      itemRef.current = totalItems
       return
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalItems])
 
-  //close cart drawer when navigating to a different page
+    itemRef.current = totalItems
+  }, [pathname, totalItems])
+
   useEffect(() => {
     cancelTimerRef.current()
     close()
@@ -125,13 +123,13 @@ const CartDrawer = ({
       <Drawer
         direction="right"
         onMouseEnter={() => cancelTimerRef.current()}
-        className="z-50"
+        className="z-[220]"
         open={isOpen}
         onOpenChange={setIsOpen}
         {...(props as any)}
       >
         <Drawer.Trigger asChild>
-          <button className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50">
+          <button className="inline-flex items-center gap-2 rounded-full border-2 border-slate-950 bg-[#f4b400] px-4 py-2.5 text-sm font-bold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             <ShoppingBag className="h-4 w-4" />
             <span className="hidden small:inline-block">
               {cart && items && items.length > 0
@@ -141,13 +139,13 @@ const CartDrawer = ({
                   })
                 : "Cart"}
             </span>
-            <span className="inline-flex min-w-6 items-center justify-center rounded-full bg-[#f4b400] px-2 py-0.5 text-[11px] font-bold text-slate-950">
+            <span className="inline-flex min-w-6 items-center justify-center rounded-full bg-slate-950 px-2 py-0.5 text-[11px] font-bold text-white">
               {totalItems}
             </span>
           </button>
         </Drawer.Trigger>
         <Drawer.Content
-          className="fixed top-0 right-0 z-50 m-0 h-full w-full bg-white p-0 sm:w-[440px]"
+          className="fixed top-0 right-0 z-[230] m-0 h-full w-full bg-white p-0 sm:w-[440px]"
           onMouseEnter={() => cancelTimerRef.current()}
         >
           <Drawer.Header className="flex self-center">
@@ -167,7 +165,7 @@ const CartDrawer = ({
               <AppliedPromotions promotions={promotions} />
             </div>
           )}
-          <div className="flex flex-col gap-y-4 h-full self-stretch justify-between overflow-auto">
+          <div className="flex h-full flex-col justify-between gap-y-4 self-stretch overflow-auto">
             {cart && cart.items && (
               <>
                 <ItemsTemplate
@@ -175,7 +173,7 @@ const CartDrawer = ({
                   showBorders={false}
                   showTotal={false}
                 />
-                <div className="flex flex-col gap-y-3 w-full p-4">
+                <div className="flex w-full flex-col gap-y-3 p-4">
                   {cart && freeShippingPrices && (
                     <FreeShippingPriceNudge
                       variant="inline"

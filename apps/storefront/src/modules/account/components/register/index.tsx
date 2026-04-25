@@ -8,7 +8,7 @@ import { SubmitButton } from "@/modules/checkout/components/submit-button"
 import Input from "@/modules/common/components/input"
 import { HttpTypes } from "@medusajs/types"
 import { Checkbox, Label, Select, Text } from "@medusajs/ui"
-import { ChangeEvent, useActionState, useState } from "react"
+import { ChangeEvent, useActionState, useMemo, useState } from "react"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
@@ -16,9 +16,11 @@ type Props = {
 }
 
 interface FormData {
+  account_type: "normal" | "business"
   email: string
   first_name: string
   last_name: string
+  phone: string
   company_name: string
   password: string
   company_address: string
@@ -30,9 +32,11 @@ interface FormData {
 }
 
 const initialFormData: FormData = {
+  account_type: "normal",
   email: "",
   first_name: "",
   last_name: "",
+  phone: "",
   company_name: "",
   password: "",
   company_address: "",
@@ -80,18 +84,30 @@ const Register = ({ setCurrentView, regions }: Props) => {
     }))
   }
 
-  const isValid =
-    termsAccepted &&
-    !!formData.email &&
-    !!formData.first_name &&
-    !!formData.last_name &&
-    !!formData.company_name &&
-    !!formData.password &&
-    !!formData.company_address &&
-    !!formData.company_city &&
-    !!formData.company_zip &&
-    !!formData.company_country &&
-    !!formData.currency_code
+  const isBusinessAccount = formData.account_type === "business"
+
+  const isValid = useMemo(() => {
+    const baseValid =
+      termsAccepted &&
+      !!formData.email &&
+      !!formData.first_name &&
+      !!formData.last_name &&
+      !!formData.password
+
+    if (!isBusinessAccount) {
+      return baseValid
+    }
+
+    return (
+      baseValid &&
+      !!formData.company_name &&
+      !!formData.company_address &&
+      !!formData.company_city &&
+      !!formData.company_zip &&
+      !!formData.company_country &&
+      !!formData.currency_code
+    )
+  }, [formData, isBusinessAccount, termsAccepted])
 
   const countryNames = regions
     .flatMap((region) =>
@@ -103,15 +119,51 @@ const Register = ({ setCurrentView, regions }: Props) => {
 
   return (
     <div
-      className="max-w-sm flex flex-col items-start gap-2 my-8"
+      className="max-w-md flex flex-col items-start gap-2 my-8"
       data-testid="register-page"
     >
-      <Text className="text-4xl text-neutral-950 text-left mb-4">
+      <Text className="text-4xl text-neutral-950 text-left mb-2">
         Create your
         <br />
-        company account.
+        Shamstools account.
       </Text>
+      <p className="mb-4 text-sm leading-6 text-slate-500">
+        Choose a personal account for standard checkout, or a business account for bulk ordering and quote workflows.
+      </p>
       <form className="w-full flex flex-col" action={formAction}>
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <button
+            type="button"
+            onClick={() => setFormData((prev) => ({ ...prev, account_type: "normal" }))}
+            className={`rounded-2xl border px-4 py-4 text-left transition ${
+              formData.account_type === "normal"
+                ? "border-slate-950 bg-slate-950 text-white"
+                : "border-slate-200 bg-white text-slate-900"
+            }`}
+          >
+            <div className="text-sm font-bold">Normal account</div>
+            <div className={`mt-1 text-xs ${formData.account_type === "normal" ? "text-slate-300" : "text-slate-500"}`}>
+              Fast personal checkout for regular retail orders.
+            </div>
+          </button>
+          <button
+            type="button"
+            onClick={() => setFormData((prev) => ({ ...prev, account_type: "business" }))}
+            className={`rounded-2xl border px-4 py-4 text-left transition ${
+              formData.account_type === "business"
+                ? "border-slate-950 bg-slate-950 text-white"
+                : "border-slate-200 bg-white text-slate-900"
+            }`}
+          >
+            <div className="text-sm font-bold">Business account</div>
+            <div className={`mt-1 text-xs ${formData.account_type === "business" ? "text-slate-300" : "text-slate-500"}`}>
+              Company-based access for quotes, bulk orders, and team buying.
+            </div>
+          </button>
+        </div>
+
+        <input type="hidden" name="account_type" value={formData.account_type} />
+
         <div className="flex flex-col w-full gap-y-4">
           <Input
             label="Email"
@@ -145,13 +197,12 @@ const Register = ({ setCurrentView, regions }: Props) => {
             onChange={handleChange}
           />
           <Input
-            label="Company name"
-            name="company_name"
-            required
-            autoComplete="organization"
-            data-testid="company-name-input"
+            label="Phone"
+            name="phone"
+            autoComplete="tel"
+            data-testid="phone-input"
             className="bg-white"
-            value={formData.company_name}
+            value={formData.phone}
             onChange={handleChange}
           />
           <Input
@@ -165,93 +216,108 @@ const Register = ({ setCurrentView, regions }: Props) => {
             value={formData.password}
             onChange={handleChange}
           />
-          <Input
-            label="Company address"
-            name="company_address"
-            required
-            autoComplete="address"
-            data-testid="company-address-input"
-            className="bg-white"
-            value={formData.company_address}
-            onChange={handleChange}
-          />
-          <Input
-            label="Company city"
-            name="company_city"
-            required
-            autoComplete="city"
-            data-testid="company-city-input"
-            className="bg-white"
-            value={formData.company_city}
-            onChange={handleChange}
-          />
-          <Input
-            label="Company state"
-            name="company_state"
-            autoComplete="state"
-            data-testid="company-state-input"
-            className="bg-white"
-            value={formData.company_state}
-            onChange={handleChange}
-          />
-          <Input
-            label="Company zip"
-            name="company_zip"
-            required
-            autoComplete="postal-code"
-            data-testid="company-zip-input"
-            className="bg-white"
-            value={formData.company_zip}
-            onChange={handleChange}
-          />
-          <Select
-            name="company_country"
-            required
-            autoComplete="country"
-            data-testid="company-country-input"
-            value={formData.company_country}
-            onValueChange={handleSelectChange("company_country")}
-          >
-            <Select.Trigger className="rounded-full h-10 px-4">
-              <Select.Value
-                placeholder={placeholder({
-                  placeholder: "Select a country",
-                  required: true,
-                })}
+
+          {isBusinessAccount && (
+            <>
+              <Input
+                label="Company name"
+                name="company_name"
+                required
+                autoComplete="organization"
+                data-testid="company-name-input"
+                className="bg-white"
+                value={formData.company_name}
+                onChange={handleChange}
               />
-            </Select.Trigger>
-            <Select.Content>
-              {countryNames?.map((country) => (
-                <Select.Item key={country} value={country}>
-                  {country}
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select>
-          <Select
-            name="currency_code"
-            required
-            autoComplete="currency"
-            data-testid="company-currency-input"
-            value={formData.currency_code}
-            onValueChange={handleSelectChange("currency_code")}
-          >
-            <Select.Trigger className="rounded-full h-10 px-4">
-              <Select.Value
-                placeholder={placeholder({
-                  placeholder: "Select a currency",
-                  required: true,
-                })}
+              <Input
+                label="Company address"
+                name="company_address"
+                required
+                autoComplete="address"
+                data-testid="company-address-input"
+                className="bg-white"
+                value={formData.company_address}
+                onChange={handleChange}
               />
-            </Select.Trigger>
-            <Select.Content>
-              {[...new Set(currencies)].map((currency) => (
-                <Select.Item key={currency} value={currency}>
-                  {currency.toUpperCase()} ({currencySymbolMap[currency]})
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select>
+              <Input
+                label="Company city"
+                name="company_city"
+                required
+                autoComplete="city"
+                data-testid="company-city-input"
+                className="bg-white"
+                value={formData.company_city}
+                onChange={handleChange}
+              />
+              <Input
+                label="Company state"
+                name="company_state"
+                autoComplete="state"
+                data-testid="company-state-input"
+                className="bg-white"
+                value={formData.company_state}
+                onChange={handleChange}
+              />
+              <Input
+                label="Company zip"
+                name="company_zip"
+                required
+                autoComplete="postal-code"
+                data-testid="company-zip-input"
+                className="bg-white"
+                value={formData.company_zip}
+                onChange={handleChange}
+              />
+              <Select
+                name="company_country"
+                required
+                autoComplete="country"
+                data-testid="company-country-input"
+                value={formData.company_country}
+                onValueChange={handleSelectChange("company_country")}
+              >
+                <Select.Trigger className="rounded-full h-10 px-4">
+                  <Select.Value
+                    placeholder={placeholder({
+                      placeholder: "Select a country",
+                      required: true,
+                    })}
+                  />
+                </Select.Trigger>
+                <Select.Content>
+                  {countryNames?.map((country) => (
+                    <Select.Item key={country} value={country}>
+                      {country}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select>
+              <Select
+                name="currency_code"
+                required
+                autoComplete="currency"
+                data-testid="company-currency-input"
+                value={formData.currency_code}
+                onValueChange={handleSelectChange("currency_code")}
+              >
+                <Select.Trigger className="rounded-full h-10 px-4">
+                  <Select.Value
+                    placeholder={placeholder({
+                      placeholder: "Select a currency",
+                      required: true,
+                    })}
+                  />
+                </Select.Trigger>
+                <Select.Content>
+                  {[...new Set(currencies)].map((currency) => (
+                    <Select.Item key={currency} value={currency}>
+                      {currency.toUpperCase()} ({currencySymbolMap[currency]})
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select>
+            </>
+          )}
         </div>
         <div className="border-b border-neutral-200 my-6" />
         <ErrorMessage error={message} data-testid="register-error" />
@@ -277,7 +343,7 @@ const Register = ({ setCurrentView, regions }: Props) => {
           data-testid="register-button"
           disabled={!isValid}
         >
-          Register
+          {isBusinessAccount ? "Create business account" : "Create account"}
         </SubmitButton>
       </form>
       <span className="text-center text-ui-fg-base text-small-regular mt-6">

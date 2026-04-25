@@ -13,10 +13,14 @@ const AccountLayout: React.FC<AccountLayoutProps> = async ({
   customer,
   children,
 }) => {
-  const { carts_with_approvals } = await listApprovals({
-    type: ApprovalType.ADMIN,
-    status: ApprovalStatusType.PENDING,
-  })
+  const isBusinessCustomer = !!customer?.employee
+
+  const { carts_with_approvals } = isBusinessCustomer
+    ? await listApprovals({
+        type: ApprovalType.ADMIN,
+        status: ApprovalStatusType.PENDING,
+      }).catch(() => ({ carts_with_approvals: [] }))
+    : { carts_with_approvals: [] }
 
   const numPendingApprovals = carts_with_approvals?.length || 0
 
@@ -26,7 +30,7 @@ const AccountLayout: React.FC<AccountLayoutProps> = async ({
       data-testid="account-page"
     >
       <div className="flex-1 content-container h-full max-w-7xl mx-auto flex flex-col">
-        <div className="grid grid-cols-1  small:grid-cols-[240px_1fr] py-12">
+        <div className="grid grid-cols-1 small:grid-cols-[240px_1fr] py-12">
           <div>
             {customer && (
               <AccountNav

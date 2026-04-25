@@ -11,10 +11,12 @@ type OverviewProps = {
 }
 
 const Overview = ({ customer, orders }: OverviewProps) => {
+  const isBusinessCustomer = !!customer?.employee
+
   return (
     <div data-testid="overview-page-wrapper">
       <div className="hidden small:block">
-        <div className="text-xl-semi flex justify-between items-center mb-4">
+        <div className="mb-4 flex justify-between items-center text-xl-semi">
           <span data-testid="welcome-message" data-value={customer?.first_name}>
             Hello {customer?.first_name}
           </span>
@@ -29,6 +31,21 @@ const Overview = ({ customer, orders }: OverviewProps) => {
             </span>
           </span>
         </div>
+
+        <div className="mb-6 rounded-3xl border border-slate-200 bg-white px-6 py-5">
+          <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+            Account type
+          </div>
+          <div className="mt-2 text-lg font-bold text-slate-950">
+            {isBusinessCustomer ? "Business account" : "Normal account"}
+          </div>
+          <p className="mt-2 text-sm leading-6 text-slate-500">
+            {isBusinessCustomer
+              ? "Your account includes company-linked buying, approvals, and business ordering workflows."
+              : "Your account is set up for standard personal shopping and checkout."}
+          </p>
+        </div>
+
         <div className="flex flex-col gap py-8 border-t border-gray-200">
           <div className="flex flex-col gap-y-8 h-full col-span-1 row-span-2 flex-1">
             <div className="flex items-start gap-x-16 mb-6">

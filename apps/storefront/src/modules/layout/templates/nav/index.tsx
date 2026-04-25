@@ -26,7 +26,7 @@ export async function NavigationHeader() {
 
       <div className="content-container flex flex-col gap-4 py-4">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-6">
+          <div className="flex min-w-0 items-center gap-4 small:gap-6">
             <LocalizedClientLink href="/" className="flex min-w-0 flex-col">
               <span className="text-[0.68rem] font-bold uppercase tracking-[0.26em] text-[#d59a00]">
                 Shamstools
@@ -41,18 +41,20 @@ export async function NavigationHeader() {
             <HeaderSearch />
           </div>
 
-          <div className="flex items-center gap-3 small:gap-4">
+          <div className="flex items-center gap-2 small:gap-3">
+            <Suspense fallback={<SkeletonCartButton />}>
+              <CartButton />
+            </Suspense>
+
             <div className="hidden rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 medium:block">
               {totalItems} item{totalItems === 1 ? "" : "s"}
             </div>
 
-            <Suspense fallback={<SkeletonAccountButton />}>
-              <AccountButton customer={customer} />
-            </Suspense>
-
-            <Suspense fallback={<SkeletonCartButton />}>
-              <CartButton />
-            </Suspense>
+            <div className="hidden small:block">
+              <Suspense fallback={<SkeletonAccountButton />}>
+                <AccountButton customer={customer} />
+              </Suspense>
+            </div>
 
             <div className="small:hidden">
               <MobileMenu
@@ -78,7 +80,7 @@ export async function NavigationHeader() {
           <LocalizedClientLink href="/account" className="nav-link">
             B2B Account
           </LocalizedClientLink>
-          <LocalizedClientLink href="/cart" className="nav-link">
+          <LocalizedClientLink href="/cart" className="nav-link font-bold text-slate-950">
             Cart
           </LocalizedClientLink>
         </div>
