@@ -43,3 +43,33 @@ export const AdminSendNewsletterCampaign = z
 export type AdminSendNewsletterCampaignType = z.infer<
   typeof AdminSendNewsletterCampaign
 >;
+
+export const AdminDeleteNewsletterSubscriber = z
+  .object({
+    id: z.string(),
+  })
+  .strict();
+export type AdminDeleteNewsletterSubscriberType = z.infer<
+  typeof AdminDeleteNewsletterSubscriber
+>;
+
+export const AdminImportNewsletterSubscribers = z
+  .object({
+    subscribers: z
+      .array(
+        z
+          .object({
+            email: z.string().email(),
+            first_name: z.string().optional().nullable(),
+            last_name: z.string().optional().nullable(),
+            source: z.string().optional().nullable(),
+            status: z.enum(["subscribed", "unsubscribed"]).optional(),
+          })
+          .strict()
+      )
+      .min(1),
+  })
+  .strict();
+export type AdminImportNewsletterSubscribersType = z.infer<
+  typeof AdminImportNewsletterSubscribers
+>;

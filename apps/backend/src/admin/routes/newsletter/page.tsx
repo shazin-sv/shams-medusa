@@ -15,6 +15,8 @@ import {
 import { useState } from "react";
 import {
   useCreateNewsletterCampaign,
+  useDeleteNewsletterSubscriber,
+  useImportNewsletterSubscribers,
   useNewsletterCampaigns,
   useNewsletterSubscribers,
   useSendNewsletterCampaign,
@@ -37,6 +39,7 @@ const NewsletterPage = () => {
   const [editPreviewText, setEditPreviewText] = useState("");
   const [editHtml, setEditHtml] = useState("");
   const [selectedRecipients, setSelectedRecipients] = useState<string[]>([]);
+  const [importText, setImportText] = useState("");
 
   const createCampaign = useCreateNewsletterCampaign({
     onSuccess: () => {
@@ -56,6 +59,25 @@ const NewsletterPage = () => {
     },
     onError: (error) => {
       toast.error(error.message || "Failed to update campaign");
+    },
+  });
+
+  const deleteSubscriber = useDeleteNewsletterSubscriber({
+    onSuccess: () => {
+      toast.success("Subscriber deleted");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete subscriber");
+    },
+  });
+
+  const importSubscribers = useImportNewsletterSubscribers({
+    onSuccess: (data) => {
+      toast.success(`Imported ${data?.count || 0} subscribers`);
+      setImportText("");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to import subscribers");
     },
   });
 
@@ -138,6 +160,47 @@ const NewsletterPage = () => {
           </div>
         </Container>
 
+        <Container className="p-6">
+          <Heading level="h2">Import subscribers</Heading>
+          <Text className="text-ui-fg-subtle mt-2">
+            Paste CSV lines as: email,first_name,last_name
+          </Text>
+          <div className="mt-4 grid gap-4">
+            <Textarea
+              rows={8}
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              placeholder={"jane@example.com,Jane,Doe\njohn@example.com,John,Smith"}
+            />
+            <div>
+              <Button
+                onClick={() => {
+                  const subscribers = importText
+                    .split(/\r?\n/)
+                    .map((line) => line.trim())
+                    .filter(Boolean)
+                    .map((line) => {
+                      const [email, first_name, last_name] = line.split(",").map((part) => part?.trim())
+
+                      return {
+                        email,
+                        first_name: first_name || null,
+                        last_name: last_name || null,
+                        source: "admin-import",
+                        status: "subscribed" as const,
+                      }
+                    })
+
+                  importSubscribers.mutate({ subscribers })
+                }}
+                disabled={!importText.trim() || importSubscribers.isPending}
+              >
+                Import subscribers
+              </Button>
+            </div>
+          </div>
+        </Container>
+
         <Container className="p-0 overflow-hidden">
           <div className="p-6 border-b">
             <Heading level="h2">Subscribers</Heading>
@@ -149,6 +212,7 @@ const NewsletterPage = () => {
                 <Table.HeaderCell>Name</Table.HeaderCell>
                 <Table.HeaderCell>Status</Table.HeaderCell>
                 <Table.HeaderCell>Source</Table.HeaderCell>
+                <Table.HeaderCell>Actions</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -160,6 +224,16 @@ const NewsletterPage = () => {
                   </Table.Cell>
                   <Table.Cell>{subscriber.status}</Table.Cell>
                   <Table.Cell>{subscriber.source || "-"}</Table.Cell>
+                  <Table.Cell>
+                    <Button
+                      size="small"
+                      variant="secondary"
+                      onClick={() => deleteSubscriber.mutate({ id: subscriber.id })}
+                      disabled={deleteSubscriber.isPending}
+                    >
+                      Delete
+                    </Button>
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>

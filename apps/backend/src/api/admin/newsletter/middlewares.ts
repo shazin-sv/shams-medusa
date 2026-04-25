@@ -9,9 +9,12 @@ import {
 } from "./query-config";
 import {
   AdminCreateNewsletterCampaign,
+  AdminDeleteNewsletterSubscriber,
   AdminGetNewsletterCampaignParams,
   AdminGetNewsletterSubscriberParams,
+  AdminImportNewsletterSubscribers,
   AdminSendNewsletterCampaign,
+  AdminUpdateNewsletterCampaign,
 } from "./validators";
 
 export const adminNewsletterMiddlewares: MiddlewareRoute[] = [
@@ -47,8 +50,23 @@ export const adminNewsletterMiddlewares: MiddlewareRoute[] = [
     ],
   },
   {
+    method: ["PUT"],
+    matcher: "/admin/newsletter/campaigns",
+    middlewares: [validateAndTransformBody(AdminUpdateNewsletterCampaign)],
+  },
+  {
     method: ["POST"],
     matcher: "/admin/newsletter/campaigns/:id/send",
     middlewares: [validateAndTransformBody(AdminSendNewsletterCampaign)],
+  },
+  {
+    method: ["POST"],
+    matcher: "/admin/newsletter/subscribers/import",
+    middlewares: [validateAndTransformBody(AdminImportNewsletterSubscribers)],
+  },
+  {
+    method: ["DELETE"],
+    matcher: "/admin/newsletter/subscribers",
+    middlewares: [validateAndTransformBody(AdminDeleteNewsletterSubscriber)],
   },
 ];

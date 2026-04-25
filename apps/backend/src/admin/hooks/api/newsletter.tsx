@@ -139,3 +139,59 @@ export const useSendNewsletterCampaign = (
     ...options,
   });
 };
+
+export const useDeleteNewsletterSubscriber = (
+  options?: UseMutationOptions<any, FetchError, { id: string }>
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body) =>
+      sdk.client.fetch(`/admin/newsletter/subscribers`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: newsletterQueryKey.list("subscribers"),
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
+export const useImportNewsletterSubscribers = (
+  options?: UseMutationOptions<
+    any,
+    FetchError,
+    {
+      subscribers: {
+        email: string
+        first_name?: string | null
+        last_name?: string | null
+        source?: string | null
+        status?: "subscribed" | "unsubscribed"
+      }[]
+    }
+  >
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body) =>
+      sdk.client.fetch(`/admin/newsletter/subscribers/import`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: newsletterQueryKey.list("subscribers"),
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
