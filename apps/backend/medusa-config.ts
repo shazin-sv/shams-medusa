@@ -1,6 +1,7 @@
 import { QUOTE_MODULE } from "./src/modules/quote";
 import { APPROVAL_MODULE } from "./src/modules/approval";
 import { COMPANY_MODULE } from "./src/modules/company";
+import { NEWSLETTER_MODULE } from "./src/modules/newsletter";
 import { loadEnv, defineConfig } from "@medusajs/framework/utils";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
@@ -24,7 +25,7 @@ module.exports = defineConfig({
     },
   },
   admin: {
-    disable: false,
+    disable: true,
   },
   modules: {
     [COMPANY_MODULE]: {
@@ -35,6 +36,9 @@ module.exports = defineConfig({
     },
     [APPROVAL_MODULE]: {
       resolve: "./modules/approval",
+    },
+    [NEWSLETTER_MODULE]: {
+      resolve: "./modules/newsletter",
     },
   },
 });

@@ -1,7 +1,7 @@
 import { HttpTypes } from "@medusajs/types"
 import { NextRequest, NextResponse } from "next/server"
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
+const BACKEND_URL = (process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "").replace(/\/$/, "")
 const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "us"
 
@@ -18,7 +18,7 @@ async function getRegionMap(cacheId: string) {
     regionMapUpdated < Date.now() - 3600 * 1000
   ) {
     // Fetch regions from Medusa. We can't use the JS client here because middleware is running on Edge and the client needs a Node environment.
-    const { regions } = await fetch(`${BACKEND_URL}/store/regions`, {
+    const response = await fetch(`${BACKEND_URL}/store/regions`, {
       headers: {
         "x-publishable-api-key": PUBLISHABLE_API_KEY!,
       },
@@ -26,15 +26,25 @@ async function getRegionMap(cacheId: string) {
         revalidate: 3600,
         tags: [`regions-${cacheId}`],
       },
-    }).then(async (response) => {
-      const json = await response.json()
-
-      if (!response.ok) {
-        throw new Error(json.message)
-      }
-
-      return json
     })
+
+    const contentType = response.headers.get("content-type") || ""
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(
+        `Failed to fetch regions: ${response.status} ${response.statusText}. ${errorText.slice(0, 200)}`
+      )
+    }
+
+    if (!contentType.includes("application/json")) {
+      const bodyText = await response.text()
+      throw new Error(
+        `Expected JSON from ${BACKEND_URL}/store/regions but got ${contentType || "unknown content-type"}. Response starts with: ${bodyText.slice(0, 200)}`
+      )
+    }
+
+    const { regions } = await response.json()
 
     if (!regions?.length) {
       throw new Error(
