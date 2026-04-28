@@ -3,18 +3,49 @@ import type {
   MedusaResponse,
 } from "@medusajs/framework";
 import nodemailer from "nodemailer";
+import { existsSync, readFileSync } from "fs";
+import { join } from "path";
 import { NEWSLETTER_MODULE } from "../../../../../../modules/newsletter";
 import { AdminSendNewsletterCampaignType } from "../../../validators";
 
+function readEnvValue(key: string) {
+  const direct = process.env[key];
+
+  if (direct) {
+    return direct;
+  }
+
+  const envPath = join(process.cwd(), ".env");
+
+  if (!existsSync(envPath)) {
+    return undefined;
+  }
+
+  const line = readFileSync(envPath, "utf8")
+    .split(/\r?\n/)
+    .find((entry) => entry.startsWith(`${key}=`));
+
+  if (!line) {
+    return undefined;
+  }
+
+  return line.slice(key.length + 1).trim();
+}
+
 function getTransporter() {
+  const host = readEnvValue("EMAIL_HOST");
+  const port = Number(readEnvValue("EMAIL_PORT") || 587);
+  const user = readEnvValue("EMAIL_USER");
+  const pass = readEnvValue("EMAIL_PASS");
+
   return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT || 587),
-    secure: Number(process.env.EMAIL_PORT || 587) === 465,
-    auth: process.env.EMAIL_USER
+    host,
+    port,
+    secure: port === 465,
+    auth: user
       ? {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
+          user,
+          pass,
         }
       : undefined,
   });
@@ -40,7 +71,9 @@ export const POST = async (
       : await newsletterService.listSubscribers({ status: "subscribed" }, { take: 1000 });
 
   const transporter = getTransporter();
-  const from = process.env.EMAIL_FROM || `Shamstools <${process.env.EMAIL_USER}>`;
+  const emailFrom = readEnvValue("EMAIL_FROM");
+  const emailUser = readEnvValue("EMAIL_USER");
+  const from = emailFrom || (emailUser ? `Shamstools <${emailUser}>` : undefined);
 
   if (!from) {
     return res.status(400).json({ message: "SMTP sender is not configured" });

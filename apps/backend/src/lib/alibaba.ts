@@ -115,6 +115,38 @@ export const createAlibabaCallbackRecord = (
   headers,
 })
 
+export const exchangeAlibabaAuthorizationCode = async (code: string) => {
+  const config = getAlibabaConfig()
+
+  if (!config.appKey || !config.appSecret || !config.callbackUrl) {
+    throw new Error("Alibaba auth is not configured with app key, app secret, and callback URL")
+  }
+
+  const params = new URLSearchParams({
+    grant_type: "authorization_code",
+    client_id: config.appKey,
+    client_secret: config.appSecret,
+    redirect_uri: config.callbackUrl,
+    code,
+  })
+
+  const response = await fetch("https://oauth.alibaba.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString(),
+  })
+
+  const data = await response.json().catch(() => null)
+
+  if (!response.ok) {
+    throw new Error(data?.error_description || data?.message || `Alibaba token exchange failed with status ${response.status}`)
+  }
+
+  return data
+}
+
 export const forwardAlibabaOrder = async (input: ForwardAlibabaOrderInput) => {
   const config = getAlibabaConfig()
 
