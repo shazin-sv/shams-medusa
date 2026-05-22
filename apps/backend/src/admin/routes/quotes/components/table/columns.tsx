@@ -31,9 +31,18 @@ export const useQuotesTableColumns = () => {
       columnHelper.accessor("draft_order.total", {
         header: t("fields.total"),
         cell: ({ getValue, row }) => {
-          <TextCell
-            text={`${row.original.draft_order.currency_code.toUpperCase()} ${getValue()}`}
-          />;
+          const total = getValue();
+          const currency = row.original.draft_order?.currency_code;
+
+          if (total == null || !currency) {
+            return <TextCell text="—" />;
+          }
+
+          return (
+            <TextCell
+              text={`${currency.toUpperCase()} ${total}`}
+            />
+          );
         },
       }),
 

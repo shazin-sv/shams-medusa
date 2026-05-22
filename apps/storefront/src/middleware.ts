@@ -10,6 +10,48 @@ const regionMapCache = {
   regionMapUpdated: Date.now(),
 }
 
+const siteUnlockCache = {
+  unlocked: false,
+  updated: 0,
+}
+
+const SITE_STATUS_TTL_MS = 30_000
+
+async function isSiteUnlocked(): Promise<boolean> {
+  if (Date.now() - siteUnlockCache.updated < SITE_STATUS_TTL_MS) {
+    return siteUnlockCache.unlocked
+  }
+
+  if (!BACKEND_URL || !PUBLISHABLE_API_KEY) {
+    return false
+  }
+
+  try {
+    const response = await fetch(`${BACKEND_URL}/store/site-settings`, {
+      headers: {
+        "x-publishable-api-key": PUBLISHABLE_API_KEY,
+      },
+      cache: "no-store",
+    })
+
+    if (!response.ok) {
+      return false
+    }
+
+    const data = await response.json()
+    siteUnlockCache.unlocked = !!data.unlocked
+    siteUnlockCache.updated = Date.now()
+
+    return siteUnlockCache.unlocked
+  } catch {
+    return false
+  }
+}
+
+function isStaticAsset(pathname: string) {
+  return pathname.includes(".")
+}
+
 async function getRegionMap(cacheId: string) {
   const { regionMap, regionMapUpdated } = regionMapCache
 
@@ -119,6 +161,22 @@ async function setCacheId(request: NextRequest, response: NextResponse) {
  * Middleware to handle region selection and cache id.
  */
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  if (isStaticAsset(pathname)) {
+    return NextResponse.next()
+  }
+
+  const unlocked = await isSiteUnlocked()
+
+  if (!unlocked) {
+    if (pathname === "/coming-soon" || pathname.startsWith("/coming-soon/")) {
+      return NextResponse.next()
+    }
+
+    return NextResponse.rewrite(new URL("/coming-soon", request.url))
+  }
+
   const searchParams = request.nextUrl.searchParams
   const cartId = searchParams.get("cart_id")
   const checkoutStep = searchParams.get("step")
@@ -141,11 +199,6 @@ export async function middleware(request: NextRequest) {
 
   // check if one of the country codes is in the url
   if (urlHasCountryCode && (!cartId || cartIdCookie) && cacheIdCookie) {
-    return NextResponse.next()
-  }
-
-  // check if the url is a static asset
-  if (request.nextUrl.pathname.includes(".")) {
     return NextResponse.next()
   }
 

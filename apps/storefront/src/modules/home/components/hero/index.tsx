@@ -24,6 +24,12 @@ const Hero = () => {
               Shop now
               <ArrowRight className="h-4 w-4" />
             </LocalizedClientLink>
+            <LocalizedClientLink
+              href="/request-quote"
+              className="btn-ghost border-white/20 bg-white/5 text-white hover:bg-white/10"
+            >
+              Request a quote
+            </LocalizedClientLink>
             <LocalizedClientLink href="/cart" className="btn-ghost border-white/20 bg-white/5 text-white hover:bg-white/10">
               View cart
             </LocalizedClientLink>
@@ -74,14 +80,18 @@ const Hero = () => {
 
           <div className="grid gap-4 small:grid-cols-3">
             {[
-              ["Fast browsing", "Category-led"],
-              ["Request quote", "B2B basic"],
-              ["Clean checkout", "B2C ready"],
-            ].map(([title, text]) => (
-              <div key={title} className="surface-card p-5 text-center">
+              ["Fast browsing", "Category-led", "/store"],
+              ["Request quote", "No account needed", "/request-quote"],
+              ["Clean checkout", "B2C ready", "/cart"],
+            ].map(([title, text, href]) => (
+              <LocalizedClientLink
+                key={title}
+                href={href}
+                className="surface-card block p-5 text-center transition-colors hover:bg-slate-50"
+              >
                 <div className="text-lg font-extrabold tracking-[-0.03em] text-slate-950">{title}</div>
                 <div className="mt-1 text-sm text-slate-500">{text}</div>
-              </div>
+              </LocalizedClientLink>
             ))}
           </div>
         </div>

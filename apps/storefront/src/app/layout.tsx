@@ -5,6 +5,10 @@ import "../styles/globals.css"
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000"),
+  icons: {
+    icon: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", type: "image/png" }],
+  },
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {

@@ -1,12 +1,9 @@
-import type {
-  AuthenticatedMedusaRequest,
-  MedusaResponse,
-} from "@medusajs/framework";
-import { NEWSLETTER_MODULE } from "../../../modules/newsletter";
-import { ModuleCreateNewsletterSubscriber } from "../../../types/newsletter/module";
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework";
+import { NEWSLETTER_MODULE } from "../../../../modules/newsletter";
+import { StoreSubscribeNewsletterType } from "../validators";
 
 export const POST = async (
-  req: AuthenticatedMedusaRequest<ModuleCreateNewsletterSubscriber>,
+  req: MedusaRequest<StoreSubscribeNewsletterType>,
   res: MedusaResponse
 ) => {
   const newsletterService = req.scope.resolve(NEWSLETTER_MODULE);

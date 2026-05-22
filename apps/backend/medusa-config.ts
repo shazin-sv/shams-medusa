@@ -2,6 +2,8 @@ import { QUOTE_MODULE } from "./src/modules/quote";
 import { APPROVAL_MODULE } from "./src/modules/approval";
 import { COMPANY_MODULE } from "./src/modules/company";
 import { NEWSLETTER_MODULE } from "./src/modules/newsletter";
+import { QUOTE_REQUEST_MODULE } from "./src/modules/quote-request";
+import { SITE_SETTINGS_MODULE } from "./src/modules/site-settings";
 import { loadEnv, defineConfig } from "@medusajs/framework/utils";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
@@ -25,7 +27,7 @@ module.exports = defineConfig({
     },
   },
   admin: {
-    disable: true,
+    disable: false,
   },
   modules: {
     [COMPANY_MODULE]: {
@@ -39,6 +41,12 @@ module.exports = defineConfig({
     },
     [NEWSLETTER_MODULE]: {
       resolve: "./modules/newsletter",
+    },
+    [QUOTE_REQUEST_MODULE]: {
+      resolve: "./modules/quote-request",
+    },
+    [SITE_SETTINGS_MODULE]: {
+      resolve: "./modules/site-settings",
     },
   },
 });

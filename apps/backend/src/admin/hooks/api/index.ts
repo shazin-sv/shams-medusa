@@ -7,3 +7,5 @@ export * from "./regions";
 export * from "./variants";
 export * from "./customers";
 export * from "./newsletter";
+export * from "./quote-requests";
+export * from "./site-settings";

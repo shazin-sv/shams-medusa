@@ -2,7 +2,6 @@
 
 import Button from "@/modules/common/components/button"
 import LocalizedClientLink from "@/modules/common/components/localized-client-link"
-import { RequestQuotePrompt } from "@/modules/quotes/components/request-quote-prompt"
 
 const catalogMail =
   "mailto:contact@shamstools.com?subject=Full%20Catalog%20Request&body=Please%20send%20the%20full%20product%20catalog."
@@ -20,11 +19,11 @@ export function HeroCTAs() {
           Download Full Catalog
         </Button>
       </a>
-      <RequestQuotePrompt>
+      <LocalizedClientLink href="/request-quote">
         <Button variant="secondary" className="min-w-[140px]">
           Request a Quote
         </Button>
-      </RequestQuotePrompt>
+      </LocalizedClientLink>
       <LocalizedClientLink href="/#featured-products">
         <Button
           variant="transparent"
