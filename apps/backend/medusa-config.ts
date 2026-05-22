@@ -27,7 +27,7 @@ module.exports = defineConfig({
     },
   },
   admin: {
-    disable: false,
+    disable: true,
   },
   modules: {
     [COMPANY_MODULE]: {
